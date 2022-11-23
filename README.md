@@ -65,4 +65,7 @@ This repository contains the merging framework and template example circuits.
      * top right: Fetch Origin
 
 
-
+# Bragg grating design tips
+  * Simulate the Bragg grating using ideal geometry (e.g., 350 nm width)
+  * Fabrication process bias information is available in these [slides](https://docs.google.com/presentation/d/19F0aWFHHWYnfZA7-BLKOxTljj-T4D4Mc9Gzyav_P6xI).  Increase the size the Bragg grating to compensate for the fabrication process (e.g., increase by 36 nm, from 350 nm to 386 nm).
+  

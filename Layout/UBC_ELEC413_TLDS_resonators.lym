@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>'''
+Script to create a layout:
+
+DFB Laser integrated with Photonic Wire Bonds
+1x64 Splitter using a tree of 1x2 splitters
+64 cells containing a resonator
+Outputs connected Grating couplers with loopback for alignmnt 
+
+by Lukas Chrostowski, 2022
+
+using SiEPIC-Tools
+with functions introduced in v0.3.70, 
+specifically connect_pins_with_waveguide and connect_cell
+
+For more information on scripting:
+  https://github.com/SiEPIC/SiEPIC-Tools/wiki/Scripted-Layout
+  
+usage:
+ - run this script
+'''
+
+# Configuration for the script
+tech = ["SiEPICfab_Shuksan_PDK", "SiEPICfab_EBeam_ZEP"]
+tech = tech[1]
+
+waveguide_type={'SiEPICfab_Shuksan_PDK':'Strip TE 1310 nm, w=350 nm', 
+                'SiEPICfab_EBeam_ZEP':'Strip 1310 nm, w=350 nm (core-clad)'}
+
+wavelength='1270'
+pad_pitch = 250000
+metal_width = 20000
+metal_width_laser = 50000
+metal_width_laser_heater = 20000
+
+# SiEPIC-Tools initialization
+if SiEPIC.__version__ &lt; '0.3.94':
+    raise Exception("This design requires SiEPIC-Tools version 0.3.94 or greater.")
+from SiEPIC import scripts  
+from SiEPIC.utils import get_layout_variables
+from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell
+from SiEPIC.extend import to_itype
+from SiEPIC.extend import to_itype
+
+mw = pya.Application().instance().main_window()
+ly = mw.create_layout(tech, 1).layout()
+cell = ly.create_cell('UBC_ELEC413_TLDS_resonators')
+lv = mw.current_view()
+lv.select_cell(cell.cell_index(), 0)
+dbu = ly.dbu
+TECHNOLOGY, lv, ly, cell = get_layout_variables()
+
+if TECHNOLOGY['technology_name'] not in tech:
+    raise Exception ('This example needs to be executed in a layout with Technology = %s' % tech)
+else:
+    waveguide_type = waveguide_type[tech]
+
+# Floorplan
+die_edge = 2500000
+box = Box( Point(-die_edge, -die_edge), Point(die_edge, die_edge) )
+cell.shapes(ly.layer(TECHNOLOGY['FloorPlan'])).insert(box)
+
+# load the cells from the PDK
+if tech == "SiEPICfab_Shuksan_PDK":
+    library = tech
+    cell_laser = ly.create_cell('laser_1310nm_DFB_heater', library)
+    cell_y = ly.create_cell('y_splitter_1310', library)
+    #cell_splitter = ly.create_cell('splitter_2x2_1310', library)
+    #cell_heater = ly.create_cell('wg_heater', library)
+    cell_pad = ly.create_cell('BondPad', library)
+    cell_gcA = ly.create_cell('GC_1290_TE_8deg', library)
+    cell_gcB = ly.create_cell('GC_1310_TE_8deg', library)
+    cell_terminator = ly.create_cell('terminator_1310', library)
+    metal_layer = "M2_router"
+elif tech == "SiEPICfab_EBeam_ZEP":
+    library = tech
+    library_beta = "SiEPICfab_EBeam_ZEP_beta"
+    library_ubc = "SiEPICfab_EBeam_ZEP_UBC"
+    cell_y = ly.create_cell('y_splitter_1310', library_beta)
+    #cell_splitter = ly.create_cell('splitter_2x2_1310', library)
+    #cell_heater = ly.create_cell('wg_heater', library)
+    cell_pad = ly.create_cell('BondPad', library)
+    cell_gcA = ly.create_cell('GC_1270_te_220_Blackbox', library)
+    cell_gcB = ly.create_cell('GC_1270_te_220_Blackbox', library)
+    # cell_terminator = ly.create_cell('terminator_1310', library_beta)
+    cell_laser = ly.create_cell('laser_1270nm_DFB_BB', library_beta)
+    metal_layer = "M1"
+
+if not cell_y:
+    raise Exception ('Cannot load 1x2 splitter cell; please check the script carefully.')
+#if not cell_splitter:
+#    raise Exception ('Cannot load 2x2 splitter cell; please check the script carefully.')
+#if not cell_heater:
+#    raise Exception ('Cannot load waveguide heater cell; please check the script carefully.')
+if not cell_gcA:
+    raise Exception ('Cannot load grating coupler cell; please check the script carefully.')
+if not cell_gcB:
+    raise Exception ('Cannot load grating coupler cell; please check the script carefully.')
+if not cell_terminator:
+    raise Exception ('Cannot load terminator cell; please check the script carefully.')
+if not cell_laser:
+    raise Exception ('Cannot load laser cell; please check the script carefully.')
+if not cell_pad:
+    raise Exception ('Cannot load bond pad cell; please check the script carefully.')
+
+# Waveguide type:
+waveguides = ly.load_Waveguide_types()
+waveguide1 = [w for w in waveguides if w['name']==waveguide_type]
+if type(waveguide1) == type([]) and len(waveguide1)&gt;0:
+    waveguide = waveguide1[0]
+else:
+    waveguide = waveguides[0]
+    print('error: waveguide type not found in PDK waveguides')
+    raise Exception('error: waveguide type (%s) not found in PDK waveguides: \n%s' % (waveguide_type, [w['name'] for w in waveguides]))
+radius_um = float(waveguide['radius'])
+radius = to_itype(waveguide['radius'],ly.dbu)
+
+
+
+# laser, place at absolute position
+laser_x = -die_edge + cell_laser.bbox().top
+t = pya.Trans.from_s('r90 %s,600000' % (laser_x) )
+inst_laser = cell.insert(pya.CellInstArray(cell_laser.cell_index(), t))
+# Bond Pads
+inst_pads = []
+for i in range(0,4):
+    t = pya.Trans.from_s('r0 -2400000,%s' % (-1.5e6+pad_pitch*i))
+    inst_pad= cell.insert(pya.CellInstArray(cell_pad.cell_index(), t))
+    inst_pads.append(inst_pad)    
+    
+# Metal wires for laser
+path = Path([
+        Point(inst_pads[1].pinPoint('m_pin_right').x, inst_pads[1].pinPoint('m_pin_right').y), 
+        Point(inst_laser.pinPoint('elec1_p').x, inst_pads[1].pinPoint('m_pin_right').y), 
+        Point(inst_laser.pinPoint('elec1_p').x, inst_laser.pinPoint('elec1_p').y), ], 
+        metal_width_laser)
+cell.shapes(ly.layer(TECHNOLOGY[metal_layer])).insert(path)
+path = Path([
+        Point(inst_pads[2].pinPoint('m_pin_right').x, inst_pads[2].pinPoint('m_pin_right').y), 
+        Point(inst_laser.pinPoint('elec2_n').x, inst_pads[2].pinPoint('m_pin_right').y), 
+        Point(inst_laser.pinPoint('elec2_n').x, inst_laser.pinPoint('elec2_n').y), ], 
+        metal_width_laser)
+cell.shapes(ly.layer(TECHNOLOGY[metal_layer])).insert(path)
+
+if tech == "SiEPICfab_Shuksan_PDK":
+    path = Path([
+        Point(inst_pads[0].pinPoint('m_pin_right').x, inst_pads[0].pinPoint('m_pin_right').y), 
+        Point(inst_laser.pinPoint('heater_2').x, inst_pads[0].pinPoint('m_pin_right').y), 
+        Point(inst_laser.pinPoint('heater_2').x, inst_laser.pinPoint('heater_2').y), ], 
+        metal_width_laser_heater)
+    cell.shapes(ly.layer(TECHNOLOGY[metal_layer])).insert(path)
+    path = Path([
+        Point(inst_pads[3].pinPoint('m_pin_right').x, inst_pads[3].pinPoint('m_pin_right').y), 
+        Point(inst_laser.pinPoint('heater_1').x, inst_pads[3].pinPoint('m_pin_right').y), 
+        Point(inst_laser.pinPoint('heater_1').x, inst_laser.pinPoint('heater_1').y), ], 
+        metal_width_laser_heater)
+    cell.shapes(ly.layer(TECHNOLOGY[metal_layer])).insert(path)
+
+
+x_tree_offset = -115000
+# insert splitter tree
+from SiEPIC.utils.layout import y_splitter_tree
+inst_tree_in, inst_tree_out, cell_tree = y_splitter_tree(cell, tree_depth=6, y_splitter_cell=cell_y, library="SiEPICfab_Shuksan_PDK", wg_type=waveguide_type, draw_waveguides=True)
+ytree_x, ytree_y = inst_laser.bbox().right-cell_tree.bbox().left-cell_tree.bbox().width()+x_tree_offset,0
+t = Trans(Trans.R0, ytree_x, ytree_y)
+cell.insert(CellInstArray(cell_tree.cell_index(), t))
+
+# tree port, find x position
+compA = inst_tree_out[0].parent_cell.find_components(inst=inst_tree_out[0])
+cpinA = [p for p in compA.pins if p.pin_name == 'opt1'][0]
+iA=inst_tree_out[0].parent_cell.each_parent_inst()
+parentA=next(iA).inst()
+del(iA)
+cpinA.transform(parentA.trans.inverted())
+tree_x_output = cpinA.center.x
+
+# Waveguides:
+connect_pins_with_waveguide(inst_laser, 'opt1', inst_tree_in, 'opt1', waveguide_type=waveguide_type, turtle_A=[50,-90], turtle_B=[10,-90, 100, 90])
+
+x_gc_array = -430e3 + x_tree_offset
+y_gc_array = -die_edge + 100e3
+n_x_gc_arrays = 6
+n_y_gc_arrays = 4
+n_gcs_eacharray = 8
+dx_gc_arrays = 570e3
+dy_gc_arrays = 1100e3
+dy_gcs = 127e3
+dx_gcA_B = 30e3
+dy_gcA_B = 30e3
+
+import numpy as np
+inst_gcA = [[ [0] * n_x_gc_arrays for i in range(n_y_gc_arrays)] for j in range(n_gcs_eacharray) ]
+inst_gcB = [[ [0] * n_x_gc_arrays for i in range(n_y_gc_arrays)] for j in range(n_gcs_eacharray) ]
+pointers_designs = []
+for k in range(0,n_x_gc_arrays):
+    for j in range(0,n_y_gc_arrays):
+        for i in range(n_gcs_eacharray):
+            # Grating couplers:
+            t = Trans(Trans.R180, x_gc_array+k*dx_gc_arrays, y_gc_array+i*dy_gcs+j*dy_gc_arrays)
+            inst_gcA[i][j][k] = cell.insert(CellInstArray(cell_gcA.cell_index(), t))
+            t = Trans(Trans.R180, x_gc_array+k*dx_gc_arrays+dx_gcA_B, y_gc_array+i*dy_gcs+j*dy_gc_arrays+dy_gcA_B)
+            inst_gcB[i][j][k] = cell.insert(CellInstArray(cell_gcB.cell_index(), t))
+            
+            if i in [1,2,3,4,5,6]:
+                inst_y = connect_cell(inst_gcA[i][j][k], 'opt1', cell_y, 'opt3', relaxed_pinnames=True)
+                inst_y.transform(Trans(-10000,0))
+                if k==0 and j==0 and i==1:
+                    cell_wg_gc = ly.create_cell('wg_gc')
+                    connect_pins_with_waveguide(inst_y, 'opt3', inst_gcA[i][j][k], 'opt1', waveguide_type=waveguide_type, relaxed_pinnames=True).parent_cell=cell_wg_gc
+                    connect_pins_with_waveguide(inst_y, 'opt2', inst_gcB[i][j][k], 'opt1', waveguide_type=waveguide_type, turtle_A=[10,90, 20,-90], relaxed_pinnames=True).parent_cell=cell_wg_gc
+                cell.insert(CellInstArray(cell_wg_gc.cell_index(), 
+                    Trans(Trans.R0, k*dx_gc_arrays,j*dy_gc_arrays+(i-1)*dy_gcs )))                
+            if i in [1,3,5]:
+                pointers_designs.append([inst_y])
+            
+        # Waveguides for loopback:
+        if k==0 and j==0:
+            cell_wg_loopback = ly.create_cell('wg_loopback')
+            inst_wg_loopbackB = connect_pins_with_waveguide(inst_gcB[0][j][k], 'opt1', inst_gcB[n_gcs_eacharray-1][j][k], 'opt1', waveguide_type=waveguide_type, turtle_A=[10,-90,radius_um*2,-90,60,-90], turtle_B=[10,-90,radius_um*2,-90,60,-90], relaxed_pinnames=True)
+            inst_wg_loopbackA = connect_pins_with_waveguide(inst_gcA[0][j][k], 'opt1', inst_gcA[n_gcs_eacharray-1][j][k], 'opt1', waveguide_type=waveguide_type, turtle_A=[10,90,radius_um*2,90,60+dx_gcA_B*ly.dbu+radius_um,90], turtle_B=[10,-90,radius_um*3+dy_gcA_B*ly.dbu,-90,60+dx_gcA_B*ly.dbu+radius_um,-90], relaxed_pinnames=True)
+            inst_wg_loopbackB.parent_cell=cell_wg_loopback
+            inst_wg_loopbackA.parent_cell=cell_wg_loopback
+        inst_wg_loopback = cell.insert(CellInstArray(cell_wg_loopback.cell_index(), 
+            Trans(Trans.R0, k*dx_gc_arrays,j*dy_gc_arrays )))
+            
+
+        t = Trans(Trans.R0, x_gc_array+k*dx_gc_arrays, y_gc_array+i*dy_gcs+j*dy_gc_arrays)
+        # Automated test labels:
+        text = Text ('opt_in_TE_1290_device_%s_%s' %(k+1,j+1), t)
+        shape = cell.shapes(ly.layer(TECHNOLOGY['Text'])).insert(text)
+        shape.text_size = 10/ly.dbu
+        shape.text_halign = 2
+        t = Trans(Trans.R0, x_gc_array+k*dx_gc_arrays+dx_gcA_B, y_gc_array+i*dy_gcs+j*dy_gc_arrays+dy_gcA_B)
+        text = Text ('opt_in_TE_1310_device_%s_%s' %(k+1,j+1), t)
+        shape = cell.shapes(ly.layer(TECHNOLOGY['Text'])).insert(text)
+        shape.text_size = 10/ly.dbu
+        shape.text_halign = 2
+                            
+
+
+# Load designs
+import os, pathlib, sys, importlib
+dir_path = os.path.dirname(os.path.realpath(__file__))
+if dir_path not in sys.path:
+    sys.path.append(dir_path)
+files = [f for f in os.listdir(os.path.join(os.path.dirname(
+    os.path.realpath(__file__)),'Designs')) if '.py' in pathlib.Path(f).suffixes  and '__init__' not in f]
+import Designs ### folder name ###
+importlib.invalidate_caches()
+designs_=[]
+for f in files:
+    module = 'Designs.%s' % f.replace('.py','')  ### folder name ###
+    print(' - found module: %s' % module)
+    m = importlib.import_module(module) 
+    print(m)
+    designs_.append(importlib.reload(m))
+
+i=0
+inst_designs = []
+from math import floor
+from inspect import isfunction
+for m in designs_:
+    design_name = m.__name__.replace('Designs.','')
+    print(' - found design: %s' % design_name)
+    '''
+    if tech == 'SiEPICfab_EBeam_ZEP':
+        if any([x for x in ['sherij','hollyc','kierang','davin','lukasc','dfjulien'] if x in design_name]):
+            print(' - continue: %s' % design_name)
+            continue
+    '''
+    
+    # Create frame for the design
+
+    # create a cell for the design
+    if ly.cell(design_name):
+        ly.delete_cell(ly.cell(design_name).cell_index())
+    cell_design = ly.create_cell(design_name)
+    
+    # create a floorplan
+    fp_x, fp_y = 390000, 240000
+    box = Box( Point(0, 0), Point(fp_x, fp_y) )
+    cell_design.shapes(ly.layer(99,0)).insert(box)
+
+    # input/output waveguide ports
+    # instantiate (at absolute position) 
+    wg_l = 15000
+    cell_wg1 = ly.create_cell('Waveguide_Straight', ly.technology().name, {
+        'wg_length':wg_l, 'wg_width': 350, 'pin1_name': 'opt_input' })
+    if not cell_wg1:
+        raise Exception ('Cannot load Waveguide cell; please check the script carefully.')
+    inst_wg1 = cell_design.insert(CellInstArray(cell_wg1.cell_index(), 
+        Trans(Trans.R0, wg_l/2, 50e3 )))
+    wg_l = 1000
+    cell_wg2 = ly.create_cell('Waveguide_Straight', ly.technology().name, {
+        'wg_length':wg_l, 'wg_width': 350, 'pin2_name': 'opt_output1' })
+    if not cell_wg2:
+        raise Exception ('Cannot load Waveguide cell; please check the script carefully.')
+    inst_wg2 = cell_design.insert(CellInstArray(cell_wg2.cell_index(), 
+        Trans(Trans.R0, fp_x-wg_l/2, 80e3 )))
+    cell_wg3 = ly.create_cell('Waveguide_Straight', ly.technology().name, {
+        'wg_length':wg_l, 'wg_width': 350, 'pin2_name': 'opt_output2' })
+    if not cell_wg3:
+        raise Exception ('Cannot load Waveguide cell; please check the script carefully.')
+    inst_wg3 = cell_design.insert(CellInstArray(cell_wg3.cell_index(), 
+        Trans(Trans.R0, fp_x-wg_l/2, inst_wg2.pinPoint('opt1').y+127000 )))
+
+
+    # run the design
+    mm2 = m.__name__+'.'+design_name+'(cell_design, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type)'
+    print(mm2)
+    if not(isfunction(eval(m.__name__+'.'+design_name+''))):
+        print ( )
+        pya.MessageBox.warning('Design problem', 'The function name does not match the file name %s.' % (m), pya.MessageBox.Ok)
+
+        continue
+    inst_wg1, inst_wg2, inst_wg3 = eval(mm2)
+    # instantiate 
+    inst_out = pointers_designs[i][0]
+    inst_design = connect_cell(inst_out, 'opt1', ly.cell(design_name), 'opt_output1')
+    inst_designs.append(inst_design)
+        
+    i+=1
+
+for i in range(i, min(n_x_gc_arrays*n_y_gc_arrays*3, len(inst_tree_out)*2)):
+    ii = i
+    if 1:    
+        # instantiate a blank design for all the extra cells
+        inst_out = pointers_designs[i][0]
+        inst_design = connect_cell(inst_out, 'opt1', ly.cell("design_ZZZ"), 'opt_output1')
+        inst_designs.append(inst_design)
+    else:
+        # add a terminator
+        connect_cell(inst_out, 'opt1', cell_terminator, 'opt1')
+
+
+# waveguides:
+cell_routing = ly.create_cell("waveguide_routing")
+inst_routing = cell.insert(CellInstArray(cell_routing.cell_index(), Trans(Trans.R0, 0,0)))
+# bottom row
+ii=0; j=0; turtle_A=[10+ii*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, error_min_bend_radius=False).parent_cell=cell_routing
+ii=1; j=1; turtle_A=[10+ii*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, error_min_bend_radius=False).parent_cell=cell_routing
+ii=2; j=2; turtle_A=[10+ii*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, error_min_bend_radius=False).parent_cell=cell_routing
+ii=3; j=12; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=4; j=13; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=5; j=14; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-30, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=6; j=24; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-28, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=7; j=25; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-26, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=8; j=26; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-24, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=9; j=36; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-22, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=10; j=37; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-20, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=11; j=38; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-18, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=12; j=48; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-16, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=13; j=49; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-14, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=14; j=50; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-12, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=15; j=60; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-10, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=16; j=61; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-8, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=17; j=62; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-6, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+
+# 2nd row from bottom
+ii=18; j=3; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=19; j=4; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=20; j=5; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-30, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=21; j=15; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-28, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=22; j=16; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-26, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=23; j=17; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-24, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=24; j=27; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-22, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=25; j=28; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-20, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=26; j=29; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-18, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=27; j=39; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-16, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=28; j=40; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-14, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=29; j=41; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-12, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=30; j=51; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-10, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=31; j=52; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-8, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=32; j=53; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-6, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=33; j=63; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-4, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+
+# 3rd row from bottom
+ii=34; j=6; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 6*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=35; j=7; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 4*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=36; j=8; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 2*dy_gcs*dbu-30, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=37; j=18; turtle_A=[10+ii*2,-90,20,90,20,90,20,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=38; j=19; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=39; j=20; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-30, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=40; j=30; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-28, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=41; j=31; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-26, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=42; j=32; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-24, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=43; j=42; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-22, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=44; j=43; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-20, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=45; j=44; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-18, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=46; j=54; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-16, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=47; j=55; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-14, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=48; j=56; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-12, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+
+# top row:
+ii=63; j=59; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-12, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=62; j=58; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-14, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=61; j=57; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-16, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=60; j=47; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-18, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=59; j=46; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-20, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=58; j=45; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-22, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=57; j=35; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-24, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=56; j=34; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-26, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=55; j=33; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-28, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=54; j=23; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-30, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=53; j=22; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-32, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=52; j=21; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-34, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=51; j=11; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-36, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=50; j=10; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-38, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+ii=49; j=9; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-40, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+
+  
+
+# Zoom out
+lv.clear_object_selection()
+lv.zoom_fit()
+lv.max_hier()
+
+
+if 1:
+    # Save the layout and a screenshot:
+    import os
+    filename = os.path.splitext(os.path.basename(__file__))[0]
+    dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 
+        filename+'.png')
+    file_out = os.path.join(os.path.dirname(os.path.realpath(__file__)), 
+        filename+'.gds')
+    # Save the layout, without PCell info, for fabrication
+    save_options = pya.SaveLayoutOptions()
+    # remove $$$CONTEXT_INFO$$$ PCells
+    save_options.write_context_info=False  
+    save_options.format='OASIS' # smaller file size
+    save_options.format='GDS2' 
+    # Save the layout
+    mw = pya.Application.instance().main_window()
+    cv = mw.current_view().active_cellview().index()
+    try:
+        lv.save_as(cv, file_out, save_options)
+    except:
+        raise Exception("Problem exporting your layout.")
+    try:
+        lv.save_screenshot(dir_path)
+    except:
+        raise Exception("Problem creating screenshot.")
+
+if 1:
+    from SiEPICfab_ZEP_export import export_for_fabrication
+    export_for_fabrication(flatten=True)
+</text>
+</klayout-macro>

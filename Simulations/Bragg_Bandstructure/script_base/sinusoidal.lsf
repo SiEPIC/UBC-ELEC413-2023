@@ -1,0 +1,10 @@
+addcustom;
+
+set("y",0);
+set("y span", 1e-6);
+set("equation 1", ".25+.05*sin(2*pi*x/.270)");
+set("x",0);
+set("x span", 1e-6);
+set("z",0);
+set("z span", 0.22e-6);
+

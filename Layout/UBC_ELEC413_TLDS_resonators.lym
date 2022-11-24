@@ -111,8 +111,8 @@ if not cell_gcA:
     raise Exception ('Cannot load grating coupler cell; please check the script carefully.')
 if not cell_gcB:
     raise Exception ('Cannot load grating coupler cell; please check the script carefully.')
-if not cell_terminator:
-    raise Exception ('Cannot load terminator cell; please check the script carefully.')
+#if not cell_terminator:
+#    raise Exception ('Cannot load terminator cell; please check the script carefully.')
 if not cell_laser:
     raise Exception ('Cannot load laser cell; please check the script carefully.')
 if not cell_pad:

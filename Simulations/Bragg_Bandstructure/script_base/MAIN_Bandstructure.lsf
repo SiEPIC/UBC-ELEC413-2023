@@ -32,9 +32,9 @@ mesh = 1;
 #############################
 
 ng = 4.4;  # group index of the waveguide (average width)
-W = 500e-9; # uncorrugated waveguide width
+W = 350e-9; # uncorrugated waveguide width
 dW = 50e-9; # waveguide corrugation
-period = 320e-9; # corrugations period
+period = 260e-9; # corrugations period
 rib = false; # enable or disable rib layered waveguide type (do not enable with TM mode)
 sidewall_angle = 90;
 

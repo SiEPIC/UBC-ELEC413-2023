@@ -2,7 +2,7 @@
 
 The course project is to design a photonic integrated circuit that connects to an on-chip semiconductor laser.
 
-This repository contains the merging framework and template example circuits.
+This repository contains the merging framework and template example circuits.  Have Fun!
 
 
 # Submission details

@@ -20,10 +20,10 @@ def design_kithminrw(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type)
     c.delete()
     '''
     # returns: ['text', 'font_name', 'layer', 'mag', 'inverse', 'bias', 'cspacing', 'lspacing', 'eff_cw', 'eff_ch', 'eff_lw', 'eff_dr', 'font']
-    TECHNOLOGY = get_technology_by_name('SiEPICfab_Shuksan_PDK')
+    TECHNOLOGY = get_technology_by_name(library)
     cell_text = ly.create_cell('TEXT', "Basic", {
         'text':cell.name,
-        'layer': TECHNOLOGY['M2_router'],
+        'layer': TECHNOLOGY['M1'],
         'mag': 30,
          })
     if not cell_text:

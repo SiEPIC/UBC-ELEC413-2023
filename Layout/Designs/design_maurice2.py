@@ -1,7 +1,9 @@
-from pya import *
 
 # Enter your Python code here
-def design_Sangwon(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
+from pya import *
+
+
+def design_maurice2(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     
     # load functions
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell
@@ -33,11 +35,12 @@ def design_Sangwon(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':50 ,
-        'grating_period': 0.275,
-        'corrugation_width': 0.035,
+        'number_of_periods':40,
+        'grating_period': 0.268,
+        'corrugation_width': 0.05,
         'wg_width': 0.35,
         'sinusoidal': False})
+    
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
 
@@ -59,16 +62,16 @@ def design_Sangwon(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     connect_pins_with_waveguide(inst_bragg2, 'opt1', inst_wg2, 'opt1', waveguide_type=waveguide_type)
     
     '''
-    make a long waveguide, back and forth, 
-    target 0.2 nm FSR assuming ng = 4
+    #make a long waveguide, back and forth, 
+    #target 0.2 nm FSR assuming ng = 4
     > wavelength=1270e-9; ng=4; fsr=0.2e-9;
     > L = wavelength**2/2/ng/fsr
     > L * 1e6
-    > 1000 [microns]
+    > 100 [microns]
     using "turtle" routing
     https://github.com/SiEPIC/SiEPIC-Tools/wiki/Scripted-Layout#adding-a-waveguide-between-components
     '''
     connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', waveguide_type=waveguide_type,
-        #turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
-         turtle_A = [50])
+        turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
+
     return inst_wg1, inst_wg2, inst_wg3

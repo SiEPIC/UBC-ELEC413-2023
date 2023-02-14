@@ -1,7 +1,7 @@
 from pya import *
 
-# Enter your Python code here
-def design_Sangwon(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
+
+def design_QuinlanCheng(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     
     # load functions
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell
@@ -33,11 +33,11 @@ def design_Sangwon(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':50 ,
-        'grating_period': 0.275,
-        'corrugation_width': 0.035,
+        'number_of_periods':100,
+        'grating_period': 0.280,
+        'corrugation_width': 0.05,
         'wg_width': 0.35,
-        'sinusoidal': False})
+        'sinusoidal': True})
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
 
@@ -69,6 +69,6 @@ def design_Sangwon(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     https://github.com/SiEPIC/SiEPIC-Tools/wiki/Scripted-Layout#adding-a-waveguide-between-components
     '''
     connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', waveguide_type=waveguide_type,
-        #turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
-         turtle_A = [50])
+        turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
+
     return inst_wg1, inst_wg2, inst_wg3

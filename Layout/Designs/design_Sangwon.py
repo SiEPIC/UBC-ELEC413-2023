@@ -33,9 +33,9 @@ def design_Sangwon(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':100 ,
-        'grating_period': 0.253,
-        'corrugation_width': 0.05,
+        'number_of_periods':50 ,
+        'grating_period': 0.275,
+        'corrugation_width': 0.035,
         'wg_width': 0.35,
         'sinusoidal': False})
     if not cell_bragg:

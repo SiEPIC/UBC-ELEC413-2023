@@ -11,7 +11,7 @@
 # Draw device               #
 #############################
 
-#materials;
+
 # Create structure group
 addstructuregroup;
 set("name","Bragg");
@@ -29,7 +29,7 @@ adduserprop("mat_device",5,mat_device);
 adduserprop("mat_superstrate",5,mat_superstrate);
 adduserprop("mat_substrate",5,mat_substrate);
 adduserprop("mat_handle",5,mat_handle);
-adduserprop("sinusoidal",0,1);
+adduserprop("sinusoidal",0,0);
 
 set('script','
 deleteall;

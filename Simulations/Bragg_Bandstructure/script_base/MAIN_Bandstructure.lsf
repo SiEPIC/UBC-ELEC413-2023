@@ -15,8 +15,8 @@ clear;
 # Simulation parameters     #
 #############################
 
-wl_min = 1.5e-6; # simulation wavelength start
-wl_max = 1.6e-6; # simulation wavelength stop
+wl_min = 1.26e-6; # simulation wavelength start
+wl_max = 1.36e-6; # simulation wavelength stop
 
 pol = 'TE'; # simulation polarization 
 
@@ -26,12 +26,13 @@ mesh_z = 20e-9;
 
 sim_time = 3000e-15; #E-15 is femto...
 mesh = 1;
+materials;
 
 #############################
 # Device geometry           #
 #############################
 
-ng = 4.4;  # group index of the waveguide (average width)
+ng = 4.48;  # group index of the waveguide (average width)
 W = 350e-9; # uncorrugated waveguide width
 dW = 50e-9; # waveguide corrugation
 period = 260e-9; # corrugations period
@@ -45,7 +46,7 @@ thickness_substrate = 2e-6; # substrate thickness
 thickness_handle = 300e-6; # handle substrate thickness
 
 mat_device = 'Si (Silicon) - Dispersive & Lossless'; # device material
-mat_superstrate = 'SiO2 (Glass) - Palik'; # superstrate material
+mat_superstrate = 'Air (1)'; # superstrate material
 mat_substrate = 'SiO2 (Glass) - Palik'; # substrate material
 mat_handle = 'Si (Silicon) - Dispersive & Lossless'; # handle substrate material
 

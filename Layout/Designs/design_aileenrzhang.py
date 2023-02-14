@@ -33,7 +33,7 @@ def design_aileenrzhang(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_ty
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':72,
+        'number_of_periods':50,
         'grating_period': 0.275,
         'corrugation_width': 0.0325,
         'wg_width': 0.35,

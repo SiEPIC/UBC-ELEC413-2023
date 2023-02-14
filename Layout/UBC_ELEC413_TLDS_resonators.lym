@@ -8,6 +8,7 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
+ <priority>0</priority>
  <shortcut/>
  <show-in-menu>false</show-in-menu>
  <group-name/>
@@ -347,147 +348,147 @@ for i in range(i, min(n_x_gc_arrays*n_y_gc_arrays*3, len(inst_tree_out)*2)):
         # add a terminator
         connect_cell(inst_out, 'opt1', cell_terminator, 'opt1')
 
-
-# waveguides:
-cell_routing = ly.create_cell("waveguide_routing")
-inst_routing = cell.insert(CellInstArray(cell_routing.cell_index(), Trans(Trans.R0, 0,0)))
-# bottom row
-ii=0; j=0; turtle_A=[10+ii*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, error_min_bend_radius=False).parent_cell=cell_routing
-ii=1; j=1; turtle_A=[10+ii*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, error_min_bend_radius=False).parent_cell=cell_routing
-ii=2; j=2; turtle_A=[10+ii*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, error_min_bend_radius=False).parent_cell=cell_routing
-ii=3; j=12; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=4; j=13; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=5; j=14; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-30, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=6; j=24; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-28, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=7; j=25; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-26, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=8; j=26; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-24, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=9; j=36; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-22, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=10; j=37; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-20, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=11; j=38; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-18, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=12; j=48; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-16, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=13; j=49; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-14, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=14; j=50; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-12, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=15; j=60; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-10, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=16; j=61; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-8, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=17; j=62; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-6, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-
-# 2nd row from bottom
-ii=18; j=3; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=19; j=4; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=20; j=5; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-30, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=21; j=15; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-28, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=22; j=16; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-26, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=23; j=17; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-24, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=24; j=27; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-22, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=25; j=28; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-20, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=26; j=29; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-18, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=27; j=39; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-16, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=28; j=40; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-14, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=29; j=41; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-12, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=30; j=51; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-10, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=31; j=52; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-8, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=32; j=53; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-6, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=33; j=63; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-4, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-
-# 3rd row from bottom
-ii=34; j=6; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 6*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=35; j=7; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 4*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=36; j=8; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 2*dy_gcs*dbu-30, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=37; j=18; turtle_A=[10+ii*2,-90,20,90,20,90,20,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=38; j=19; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=39; j=20; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-30, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=40; j=30; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-28, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=41; j=31; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-26, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=42; j=32; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-24, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=43; j=42; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-22, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=44; j=43; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-20, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=45; j=44; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-18, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=46; j=54; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-16, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=47; j=55; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-14, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=48; j=56; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-12, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-
-# top row:
-ii=63; j=59; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-12, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=62; j=58; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-14, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=61; j=57; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-16, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=60; j=47; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-18, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=59; j=46; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-20, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=58; j=45; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-22, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=57; j=35; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-24, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=56; j=34; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-26, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=55; j=33; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-28, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=54; j=23; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-30, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=53; j=22; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-32, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=52; j=21; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-34, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=51; j=11; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-36, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=50; j=10; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-38, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-ii=49; j=9; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-40, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
-connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-
-  
+    # waveguides:
+    cell_routing = ly.create_cell("waveguide_routing")
+    inst_routing = cell.insert(CellInstArray(cell_routing.cell_index(), Trans(Trans.R0, 0,0)))
+    # bottom row
+    ii=0; j=0; turtle_A=[10+ii*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=1; j=1; turtle_A=[10+ii*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, error_min_bend_radius=False).parent_cell=cell_routing
+if 0:
+    ii=2; j=2; turtle_A=[10+ii*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=3; j=12; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=4; j=13; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=5; j=14; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-30, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=6; j=24; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-28, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=7; j=25; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-26, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=8; j=26; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-24, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=9; j=36; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-22, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=10; j=37; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-20, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=11; j=38; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-18, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=12; j=48; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-16, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=13; j=49; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-14, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=14; j=50; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-12, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=15; j=60; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-10, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=16; j=61; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-8, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=17; j=62; turtle_A=[10+ii*2,-90, 1, 90]; turtle_B = [14, -90, 3*dy_gcs*dbu-6, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    
+    # 2nd row from bottom
+    ii=18; j=3; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=19; j=4; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=20; j=5; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-30, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=21; j=15; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-28, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=22; j=16; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-26, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=23; j=17; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-24, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=24; j=27; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-22, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=25; j=28; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-20, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=26; j=29; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-18, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=27; j=39; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-16, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=28; j=40; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-14, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=29; j=41; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-12, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=30; j=51; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-10, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=31; j=52; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-8, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=32; j=53; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-6, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=33; j=63; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-4, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    
+    # 3rd row from bottom
+    ii=34; j=6; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 6*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=35; j=7; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 4*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=36; j=8; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 2*dy_gcs*dbu-30, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=37; j=18; turtle_A=[10+ii*2,-90,20,90,20,90,20,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=38; j=19; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=39; j=20; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-30, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=40; j=30; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-28, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=41; j=31; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-26, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=42; j=32; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-24, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=43; j=42; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-22, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=44; j=43; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-20, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=45; j=44; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-18, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=46; j=54; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-16, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=47; j=55; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-14, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=48; j=56; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 3*dy_gcs*dbu-12, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    
+    # top row:
+    ii=63; j=59; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-12, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=62; j=58; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-14, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=61; j=57; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-16, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=60; j=47; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-18, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=59; j=46; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-20, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=58; j=45; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-22, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=57; j=35; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-24, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=56; j=34; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-26, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=55; j=33; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-28, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=54; j=23; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-30, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=53; j=22; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-32, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=52; j=21; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-34, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=51; j=11; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [10, -90, 3*dy_gcs*dbu-36, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=50; j=10; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [12, -90, 5*dy_gcs*dbu-38, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    ii=49; j=9; turtle_A=[10+(63-ii)*2,90, 1, -90]; turtle_B = [14, -90, 7*dy_gcs*dbu-40, 90, 1,-90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
+    
+      
 
 # Zoom out
 lv.clear_object_selection()

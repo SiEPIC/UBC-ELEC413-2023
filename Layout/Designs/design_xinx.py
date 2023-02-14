@@ -1,7 +1,10 @@
+
+# Enter your Python code here
+
 from pya import *
 
 
-def design_student1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
+def design_xinx(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     
     # load functions
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell
@@ -33,11 +36,11 @@ def design_student1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':60,
-        'grating_period': 0.270,
-        'corrugation_width': 0.08,
-        'wg_width': 0.35,
-        'sinusoidal': True})
+        'number_of_periods':135,
+        'grating_period': 0.271,
+        'corrugation_width': 0.05,
+        'wg_width': 0.385,
+        'sinusoidal': False})
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
 

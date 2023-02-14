@@ -1,7 +1,7 @@
 from pya import *
 
 
-def design_student1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
+def design_zacharychafe(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     
     # load functions
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell
@@ -33,11 +33,11 @@ def design_student1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':60,
-        'grating_period': 0.270,
-        'corrugation_width': 0.08,
+        'number_of_periods':30,
+        'grating_period': 0.27517,
+        'corrugation_width': 0.05,
         'wg_width': 0.35,
-        'sinusoidal': True})
+        'sinusoidal': False})
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
 
@@ -51,7 +51,7 @@ def design_student1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     inst_bragg2 = connect_cell(inst_bragg1, 'opt2', cell_bragg, 'opt2')
     
     # move the Bragg grating to the right, and up
-    inst_bragg2.transform(Trans(250000,80000))
+    inst_bragg2.transform(Trans(250000,120000))
 
     #####
     # Waveguides for the two outputs:
@@ -69,6 +69,7 @@ def design_student1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     https://github.com/SiEPIC/SiEPIC-Tools/wiki/Scripted-Layout#adding-a-waveguide-between-components
     '''
     connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', waveguide_type=waveguide_type,
-        turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
+        turtle_A = [250,90,20,90,50,-90,20,-90,50,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
 
     return inst_wg1, inst_wg2, inst_wg3
+# Enter your Python code here

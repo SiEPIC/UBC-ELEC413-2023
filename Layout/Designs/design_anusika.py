@@ -34,9 +34,9 @@ def design_anusika(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
         'number_of_periods':30,
-        'grating_period': 0.270,
+        'grating_period': 0.276,
         'corrugation_width': 0.05,
-        'wg_width': 0.35,
+        'wg_width': 0.350,
         'sinusoidal': True})
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')

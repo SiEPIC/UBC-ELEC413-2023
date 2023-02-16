@@ -28,7 +28,7 @@ def design_wenhan1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
          })
     if not cell_text:
         raise Exception ('Cannot load text label cell; please check the script carefully.')
-    cell.insert(CellInstArray(cell_text.cell_index(), Trans(Trans.R0, 25000,125000)))                
+    cell.insert(CellInstArray(cell_text.cell_index(), Trans(Trans.R0, 25000,130000)))                
 
     # load the cells from the PDK
     # choose appropriate parameters
@@ -36,13 +36,16 @@ def design_wenhan1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
         'number_of_periods':93,
         'grating_period': 0.270,
         'corrugation_width': 0.055,
-        'wg_width': 0.377,
+        'wg_width': 0.35,
         'sinusoidal': False})
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
+        
+      
 
     # instantiate y-branch (attached to input waveguide)
     inst_y1 = connect_cell(inst_wg1, 'opt2', cell_y, 'opt2')
+    
 
     # instantiate Bragg grating (attached to y branch)
     inst_bragg1 = connect_cell(inst_y1, 'opt1', cell_bragg, 'opt1')
@@ -51,7 +54,9 @@ def design_wenhan1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     inst_bragg2 = connect_cell(inst_bragg1, 'opt2', cell_bragg, 'opt2')
     
     # move the Bragg grating to the right, and up
-    inst_bragg2.transform(Trans(250000,80000))
+    inst_bragg2.transform(Trans(250000,130000))
+    
+   
 
     #####
     # Waveguides for the two outputs:
@@ -69,6 +74,6 @@ def design_wenhan1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     https://github.com/SiEPIC/SiEPIC-Tools/wiki/Scripted-Layout#adding-a-waveguide-between-components
     '''
     connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', waveguide_type=waveguide_type,
-        turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
+        turtle_A = [300,90,20,90,320,-90,20,-90,280,90,20,90,280,-90,20,-90, 300, 90, 20, 90, 300, -90, 20, -90] )
 
     return inst_wg1, inst_wg2, inst_wg3

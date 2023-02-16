@@ -1,0 +1,79 @@
+# Script to build a Bragg grating compact model in INTERCONNECT using a look-up table from FDTD Simulation data
+# by Lukas Chrostowski
+
+switchtolayout;
+deleteall;
+
+# Add Bragg grating
+elementName = addelement('Bragg Grating');
+setnamed(elementName, 'input parameter', 'grating period');
+setnamed(elementName, 'coupling parameter', 'coupling coefficient');
+
+select('WBG_1');
+
+wg_loss = 6 * 1e2; # dB/cm -> /m
+
+#########
+# Create a compound/scripted element
+createcompound();
+elementName = 'Bragg_grating_holes';
+set('name', elementName);
+set('prefix',elementName);
+
+# Add ports
+addport(elementName, 'opt1','Bidirectional','Optical Signal','Left',0.5);
+addport(elementName, 'opt2','Bidirectional','Optical Signal','Right',0.5);
+connect(elementName+'::WBG_1', 0, 'Bragg_grating_holes::RELAY_1', 0);
+connect(elementName+'::WBG_1', 1, 'Bragg_grating_holes::RELAY_2', 0);
+
+# Add Icon
+?path=filedirectory(currentscriptname);
+seticon(elementName, path+'/Bragg_grating.svg');
+
+# Add properties
+addproperty(elementName,'period','Design',"Number",0, 3e-6, "Distance", "nm", 0.32e-6);
+addproperty(elementName,'delta_width','Design',"Number",0, 3e-6, "Distance", "nm", 70e-9);
+addproperty(elementName,'number','Design',"Number",0, 1e6, "Dimensionless", "", 30);
+addproperty(elementName,'loss','Design',"Number",0, 1e4, "WaveguideLoss", "", wg_loss);
+annotateproperty(elementName,'delta_width');
+annotateproperty(elementName,'period');
+annotateproperty(elementName,'number');
+annotateproperty(elementName,'loss');
+
+
+M = readdata(path+'/Bragg.txt');
+
+script = '
+###############################################
+# SiEPIC compact model library (CML)
+# custom component created script, by Lukas Chrostowski
+###############################################
+' + toscript(M) + '
+?x = M(:,1);  # delta_width
+?values = M(:,2); # kappa
+?kappa = interp(values, x, %delta_width%); 
+setresult("kappa",kappa);
+?values = M(:,3);# Bragg wavelength
+?wavelength = interp(values, x, %delta_width%); 
+setresult("wavelength",wavelength);
+select("WBG_1");
+set("length", 2*%period%*%number%);
+set("grating coupling coefficient", kappa);
+set("frequency", c/wavelength);
+set("period", %period%);
+set("loss 1", %loss%);
+set("effective index 1", wavelength/2/%period%);
+set("group index 1", 4.53);
+';
+
+set("setup script", script);
+scriptautorun(true);
+
+# END: Create a compound/scripted element
+#########
+
+
+# Add to the Custom/User library
+select(elementName);
+addtolibrary('User',true);
+

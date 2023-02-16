@@ -1,0 +1,5 @@
+# Bragg grating 
+# Columns: hole_width, kappa, Bragg wavelength
+0, 0, 1300e-9
+70e-9, 1420000, 1300e-9
+

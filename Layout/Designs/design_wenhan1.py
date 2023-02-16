@@ -1,8 +1,7 @@
+from pya import *
 
-# Enterfrom pya import *
 
-
-def design_wenhan(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
+def design_wenhan1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     
     # load functions
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell
@@ -21,10 +20,10 @@ def design_wenhan(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     '''
     # returns: ['text', 'font_name', 'layer', 'mag', 'inverse', 'bias', 'cspacing', 'lspacing', 'eff_cw', 'eff_ch', 'eff_lw', 'eff_dr', 'font']
     from SiEPIC.utils import get_technology_by_name
-    TECHNOLOGY = get_technology_by_name('SiEPICfab_Shuksan_PDK')
+    TECHNOLOGY = get_technology_by_name(library)
     cell_text = ly.create_cell('TEXT', "Basic", {
         'text':cell.name,
-        'layer': TECHNOLOGY['M2_router'],
+        'layer': TECHNOLOGY['M1'],
         'mag': 30,
          })
     if not cell_text:
@@ -34,11 +33,11 @@ def design_wenhan(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':60,
+        'number_of_periods':93,
         'grating_period': 0.270,
-        'corrugation_width': 0.08,
-        'wg_width': 0.35,
-        'sinusoidal': True})
+        'corrugation_width': 0.055,
+        'wg_width': 0.377,
+        'sinusoidal': False})
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
 
@@ -72,5 +71,4 @@ def design_wenhan(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', waveguide_type=waveguide_type,
         turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
 
-    return inst_wg1, inst_wg2, inst_wg3 your Python code here
-
+    return inst_wg1, inst_wg2, inst_wg3

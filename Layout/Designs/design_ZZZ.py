@@ -1,7 +1,7 @@
 from pya import *
 from SiEPIC.utils import get_technology_by_name
 
-def design_ZZZ(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
+def design_jonathanz(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     
     # load functions
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell
@@ -26,11 +26,34 @@ def design_ZZZ(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
         raise Exception ('Cannot load text label cell; please check the script carefully.')
     cell.insert(CellInstArray(cell_text.cell_index(), Trans(Trans.R0, 25000,125000)))                
 
-    # instantiate y-branch (attached to another cell)
+    # load the cells from the PDK
+    # choose appropriate parameters
+    cell_bragg = ly.create_cell('Bragg_grating', library, {
+        'number_of_periods':100,
+        'grating_period': 0.318,
+        'corrugation_width': 0.05,
+        'wg_width': 0.35,
+        'sinusoidal': True})
+    if not cell_bragg:
+        raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
+
+    # instantiate y-branch (attached to input waveguide)
     inst_y1 = connect_cell(inst_wg1, 'opt2', cell_y, 'opt2')
 
-    # Waveguides:
+    # instantiate Bragg grating (attached to y branch)
+    inst_bragg1 = connect_cell(inst_y1, 'opt1', cell_bragg, 'opt1')
+
+    # instantiate Bragg grating (attached to the first Bragg grating)
+    inst_bragg2 = connect_cell(inst_bragg1, 'opt2', cell_bragg, 'opt2')
+    
+    # move the Bragg grating to the right, and up
+    inst_bragg2.transform(Trans(250000,80000))
+
+    #####
+    # Waveguides for the two outputs:
     connect_pins_with_waveguide(inst_y1, 'opt3', inst_wg3, 'opt1', waveguide_type=waveguide_type)
-    connect_pins_with_waveguide(inst_y1, 'opt1', inst_wg2, 'opt1', waveguide_type=waveguide_type)
+    connect_pins_with_waveguide(inst_bragg2, 'opt1', inst_wg2, 'opt1', waveguide_type=waveguide_type)
+    
+    connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', waveguide_type=waveguide_type)
 
     return inst_wg1, inst_wg2, inst_wg3

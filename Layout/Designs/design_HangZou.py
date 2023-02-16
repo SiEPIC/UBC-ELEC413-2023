@@ -33,8 +33,8 @@ def design_HangZou(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':250,
-        'grating_period': 0.265,
+        'number_of_periods':100,
+        'grating_period': 0.285,
         'corrugation_width': 0.03,
         'wg_width': 0.35,
         'sinusoidal': False})

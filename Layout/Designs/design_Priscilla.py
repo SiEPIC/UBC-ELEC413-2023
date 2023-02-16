@@ -36,7 +36,7 @@ def design_Priscilla(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type)
         'number_of_periods':100,
         'grating_period': 0.2674845022338019,
         'corrugation_width': 0.50,
-        'wg_width': 0.35,
+        'wg_width': 0.385,
         'sinusoidal': False})
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')

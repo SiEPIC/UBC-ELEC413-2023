@@ -85,7 +85,12 @@ def design_anusika(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     using "turtle" routing
     https://github.com/SiEPIC/SiEPIC-Tools/wiki/Scripted-Layout#adding-a-waveguide-between-components
     '''
-    connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', waveguide_type=waveguide_type_370,
-        turtle_A = [275,90,20,90,275,-90,20,-90,275,90,20,90,275,-90,20,-90, 275, 90, 20, 90, 275, -90, 20, -90] )
+
+    try:
+        connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', waveguide_type=waveguide_type_370,
+            turtle_A = [275,90,20,90,275,-90,20,-90,275,90,20,90,275,-90,20,-90, 275, 90, 20, 90, 275, -90, 20, -90] )
+    except:
+        connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', waveguide_type='Strip 1310 nm, w=350 nm (core-clad)',
+            turtle_A = [275,90,20,90,275,-90,20,-90,275,90,20,90,275,-90,20,-90, 275, 90, 20, 90, 275, -90, 20, -90] )
 
     return inst_wg1, inst_wg2, inst_wg3

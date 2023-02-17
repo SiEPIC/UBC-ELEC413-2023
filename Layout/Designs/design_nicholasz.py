@@ -38,7 +38,7 @@ def design_nicholasz(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type)
     cell_bragg = ly.create_cell('Bragg_grating', library, {
         'number_of_periods':80,
         'grating_period': 0.270,
-        'corrugation_width': 0.04,
+        'corrugation_width': 0.05,
         'wg_width': 0.35,
         'sinusoidal': False})
     if not cell_bragg:

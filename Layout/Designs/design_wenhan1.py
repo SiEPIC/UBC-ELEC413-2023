@@ -37,7 +37,7 @@ def design_wenhan1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
         'grating_period': 0.270,
         'corrugation_width': 0.055,
         'wg_width': 0.385,
-        'sinusoidal': True})
+        'sinusoidal': False})
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
 

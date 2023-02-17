@@ -1,4 +1,3 @@
-
 # Enter your Python code here
 from pya import *
 
@@ -54,7 +53,7 @@ def design_maurice2(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
 # instantiate y-branch (attached to input waveguide)
     inst_y1 = connect_cell(inst_wg1, 'opt2', cell_y, 'opt2')
 
-    # instantiate taper from 350 nm waveguide y-branch to 385 nm Bragg grating
+    # instantiate taper from 350 nm waveguide y-branch to 370 nm Bragg grating
     inst_taper1 = connect_cell(inst_y1, 'opt1', cell_taper, 'pin1')
     
     # instantiate Bragg grating (attached to y branch)
@@ -70,7 +69,7 @@ def design_maurice2(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     # Waveguides for the two outputs:
     connect_pins_with_waveguide(inst_y1, 'opt3', inst_wg3, 'opt1', waveguide_type=waveguide_type)
 
-    # instantiate taper from 350 nm waveguide y-branch to 385 nm Bragg grating
+    # instantiate taper from 350 nm waveguide y-branch to 370 nm Bragg grating
     inst_taper4 = connect_cell(inst_bragg2, 'opt1', cell_taper, 'pin2')
 
     connect_pins_with_waveguide(inst_taper4, 'pin1', inst_wg2, 'opt1', waveguide_type=waveguide_type)
@@ -87,7 +86,7 @@ def design_maurice2(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     '''
     try:
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', 
-            waveguide_type='Strip 1310 nm, w=385 nm (core-clad)', 
+            waveguide_type='Strip 1310 nm, w=370 nm (core-clad)', 
             turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
     except:    
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', 

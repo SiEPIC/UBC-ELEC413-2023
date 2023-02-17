@@ -1,7 +1,9 @@
+
+# Enter your Python code here
 from pya import *
 
 
-def design_WillChen(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
+def design_marklong(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     
     # load functions
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell
@@ -33,8 +35,8 @@ def design_WillChen(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':80,
-        'grating_period': 0.268,
+        'number_of_periods':166,
+        'grating_period': 0.326,
         'corrugation_width': 0.05,
         'wg_width': 0.385,
         'sinusoidal': False})
@@ -61,7 +63,7 @@ def design_WillChen(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     inst_bragg2 = connect_cell(inst_bragg1, 'opt2', cell_bragg, 'opt2')
     
     # move the Bragg grating to the right, and up
-    inst_bragg2.transform(Trans(250000,80000))
+    inst_bragg2.transform(Trans(200000,80000))
 
     #####
     # Waveguides for the two outputs:
@@ -85,10 +87,11 @@ def design_WillChen(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     try:
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', 
             waveguide_type='Strip 1310 nm, w=385 nm (core-clad)', 
-            turtle_A = [237,90,20,90,237,-90,20,-90,251,90,20,90,250,-90,20,-90] )
+            #turtle_A = [200,90,20,90,200,-90,20,-90,200,90,20,90,200,-90,20,-90] )
+            turtle_A = [20,90,45.79,-90,50,-90,45.79,90,20,90,80,-90,50,-90,80,90,20,90,80,-90] )
     except:    
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', 
             waveguide_type='Strip 1310 nm, w=350 nm (core-clad)', 
-            turtle_A = [237,90,20,90,237,-90,20,-90,251,90,20,90,250,-90,20,-90] )
+            turtle_A = [200,90,20,90,200,-90,20,-90,200,90,20,90,90,-90,20,-90] )
 
     return inst_wg1, inst_wg2, inst_wg3

@@ -35,7 +35,7 @@ def design_HangZou(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     cell_bragg = ly.create_cell('Bragg_grating', library, {
         'number_of_periods':100,
         'grating_period': 0.285,
-        'corrugation_width': 0.03,
+        'corrugation_width': 0.038,
         'wg_width': 0.35,
         'sinusoidal': False})
     if not cell_bragg:
@@ -51,7 +51,7 @@ def design_HangZou(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     inst_bragg2 = connect_cell(inst_bragg1, 'opt2', cell_bragg, 'opt2')
     
     # move the Bragg grating to the right, and up
-    inst_bragg2.transform(Trans(180000,110000))
+    inst_bragg2.transform(Trans(190000,110000))
 
     # End of Fabry-Perot
     # Waveguides for the two outputs:
@@ -69,8 +69,8 @@ def design_HangZou(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     https://github.com/SiEPIC/SiEPIC-Tools/wiki/Scripted-Layout#adding-a-waveguide-between-components
     '''
     connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', waveguide_type=waveguide_type,
-        #turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
-        turtle_A = [250,90,20,90,250,-90,30,-90,250] )
+        turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
+        #turtle_A = [250,90,20,90,250,-90,30,-90,250] )
         #turtle_A = [250] )
 
     return inst_wg1, inst_wg2, inst_wg3

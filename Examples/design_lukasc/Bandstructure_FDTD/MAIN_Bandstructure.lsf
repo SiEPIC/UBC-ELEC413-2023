@@ -1,0 +1,56 @@
+#
+#    Bragg grating Lumerical simulation flow
+#    see https://github.com/mustafacc/SiEPIC_Photonics_Package/ for documentation
+#
+#    Author: Mustafa Hammood   ; mustafa@siepic.com   ; mustafa@ece.ubc.ca
+#    SiEPIC Kits Ltd. 2020     ; University of British Columbia
+#
+#    (c)2020
+
+newproject;
+save("Bragg_Bandstructure.fsp");
+clear;
+
+#############################
+# Simulation parameters     #
+#############################
+
+wl_min = 1.0e-6; # simulation wavelength start
+wl_max = 1.6e-6; # simulation wavelength stop
+
+pol = 'TE'; # simulation polarization 
+
+mesh_y = 5e-9;
+mesh_x = 5e-9;
+mesh_z = 20e-9;
+
+sim_time = 1000e-15; #E-15 is femto...
+mesh = 4;
+
+#############################
+# Device geometry           #
+#############################
+
+bias = -15e-9;
+ng = 4.53;  # group index of the waveguide (average width)
+W = 350e-9 + bias; # uncorrugated waveguide width
+dW = 70e-9; # waveguide corrugation
+period = 320e-9; # corrugations period
+dX = period/2;
+rib = false; # enable or disable rib layered waveguide type (do not enable with TM mode)
+sidewall_angle = 90;
+
+thickness_device = 220e-9; # waveguide full thickness
+thickness_rib = 90e-9; # waveguide rib layer thickness
+thickness_superstrate = 2e-6; # superstrate thikness
+thickness_substrate = 2e-6; # substrate thickness
+thickness_handle = 300e-6; # handle substrate thickness
+
+mat_device = 'Si (Silicon) - Dispersive & Lossless'; # device material
+mat_superstrate = 'SiO2 (Glass) - Palik'; # superstrate material
+mat_substrate = 'SiO2 (Glass) - Palik'; # substrate material
+mat_handle = 'Si (Silicon) - Dispersive & Lossless'; # handle substrate material
+
+Bragg_draw;
+Bragg_simulate;
+#Bragg_analysis;

@@ -1,10 +1,7 @@
-
-# Enter your Python code here
-
 from pya import *
 
-
-def design_nicholasz(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
+#design based on the design of student1
+def design_jonas(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     
     # load functions
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell
@@ -36,14 +33,15 @@ def design_nicholasz(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type)
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':80,
-        'grating_period': 0.270,
-        'corrugation_width': 0.05,
-        'wg_width': 0.35,
-        'sinusoidal': False})
+        'number_of_periods':100, #adapted (60)
+        'grating_period': 0.269, #adapted (0.270)
+        'corrugation_width': 0.035, #adapted, my be a little small (0.08)
+        'wg_width': 0.385, #take the fabrication bias into account
+        'sinusoidal': False}) #rectangular grating (True)
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
 
+    #use a taper to switch from the "original" waveguide width to the wanted waveguide width
     cell_taper = ly.create_cell('taper', library, {
         'wg_width1': 0.350,
         'wg_width2': 0.385,

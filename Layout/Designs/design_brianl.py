@@ -30,6 +30,7 @@ def design_brianl(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
         raise Exception ('Cannot load text label cell; please check the script carefully.')
     cell.insert(CellInstArray(cell_text.cell_index(), Trans(Trans.R0, 25000,125000)))                
 
+
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {

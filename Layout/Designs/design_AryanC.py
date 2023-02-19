@@ -60,7 +60,7 @@ def design_AryanC(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     #####
     # Waveguides for the two outputs:
     connect_pins_with_waveguide(inst_y1, 'opt3', inst_wg3, 'opt1', waveguide_type=waveguide_type)
-    connect_pins_with_waveguide(inst_tapper2, 'opt1', inst_wg2, 'opt1', waveguide_type=waveguide_type) #opt1 for inst_tapper2 instead of pin1
+    connect_pins_with_waveguide(inst_taper2, 'opt1', inst_wg2, 'opt1', waveguide_type=waveguide_type) #opt1 for inst_tapper2 instead of pin1
     
     '''
     make a long waveguide, back and forth, 

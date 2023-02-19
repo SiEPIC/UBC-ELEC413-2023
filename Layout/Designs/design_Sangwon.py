@@ -85,10 +85,10 @@ def design_Sangwon(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     try:
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', 
             waveguide_type='Strip 1310 nm, w=370 nm (core-clad)', 
-            turtle_A = [198,90,20,90,199,-90,20,-90,199,90,20,90,198,-90,20,-90] )
+            turtle_A = [200,90,20,90,197,-90,20,-90,197,90,20,90,200,-90,20,-90] )
     except:    
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', 
             waveguide_type='Strip 1310 nm, w=350 nm (core-clad)', 
-            turtle_A = [198,90,20,90,199,-90,20,-90,199,90,20,90,198,-90,20,-90] )
+            turtle_A = [200,90,20,90,197,-90,20,-90,197,90,20,90,200,-90,20,-90] )
 
     return inst_wg1, inst_wg2, inst_wg3

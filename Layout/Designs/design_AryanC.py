@@ -60,7 +60,7 @@ def design_AryanC(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     inst_bragg2.transform(Trans(250000,80000))
     inst_taper2 = connect_cell(inst_bragg2, 'opt1', cell_taper, 'pin2') # opt1<---inst_bragg2--->opt1 + pin2<---cell_tapper--->pin1 = opt1<---inst_tapper2--->pin1
     connect_pins_with_waveguide(inst_y1, 'opt3', inst_wg3, 'opt1', waveguide_type=waveguide_type)
-    connect_pins_with_waveguide(inst_tapper2, 'pin1', inst_wg2, 'opt1', waveguide_type=waveguide_type)
+    connect_pins_with_waveguide(inst_taper2, 'pin1', inst_wg2, 'opt1', waveguide_type=waveguide_type)
     try: 
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', waveguide_type='Strip 1310 nm, w=370 nm (core-clad)',
             turtle_A = [275,90,20,90,275,-90,20,-90,275,90,20,90,275,-90,20,-90, 275, 90, 20, 90, 275, -90, 20, -90] )

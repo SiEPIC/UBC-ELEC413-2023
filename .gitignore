@@ -1,6 +1,8 @@
 UBC_ELEC413_TLDS_Bragg_resonators.oas
 UBC_ELEC413_TLDS_Bragg_resonators.png
 
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

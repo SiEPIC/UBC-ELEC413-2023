@@ -17,11 +17,10 @@ def design_jonathanz(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type)
     '''
     # returns: ['text', 'font_name', 'layer', 'mag', 'inverse', 'bias', 'cspacing', 'lspacing', 'eff_cw', 'eff_ch', 'eff_lw', 'eff_dr', 'font']
 <<<<<<< HEAD:Layout/Designs/design_jonathanz.py
-    TECHNOLOGY = get_technology_by_name('SiEPICfab_Shuksan_PDK')
+    TECHNOLOGY = get_technology_by_name(library)
 =======
     from SiEPIC.utils import get_technology_by_name
     TECHNOLOGY = get_technology_by_name(library)
->>>>>>> 880f5f8a7e191492aa2e60da0bdea183c4d7ee5a:Layout/Designs/design_student1.py
     cell_text = ly.create_cell('TEXT', "Basic", {
         'text':cell.name,
         'layer': TECHNOLOGY['M1'],
@@ -29,31 +28,28 @@ def design_jonathanz(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type)
          })
     if not cell_text:
         raise Exception ('Cannot load text label cell; please check the script carefully.')
-    cell.insert(CellInstArray(cell_text.cell_index(), Trans(Trans.R0, 25000,125000)))                
-
-<<<<<<< HEAD:Layout/Designs/design_jonathanz.py
+    cell.insert(CellInstArray(cell_text.cell_index(), Trans(Trans.R0, 25000,125000)))
    cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':50,
-        'grating_period': 0.260,
+        'number_of_periods':35,
+        'grating_period': 0.275,
         'corrugation_width': 0.05,
-        'wg_width': 0.35,
-        'sinusoidal': False})
+        'wg_width': 0.37,
+        'sinusoidal': True})
 =======
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':60,
-        'grating_period': 0.270,
-        'corrugation_width': 0.08,
-        'wg_width': 0.385,
+        'number_of_periods':35,
+        'grating_period': 0.275,
+        'corrugation_width': 0.05,
+        'wg_width': 0.37,
         'sinusoidal': True})
->>>>>>> 880f5f8a7e191492aa2e60da0bdea183c4d7ee5a:Layout/Designs/design_student1.py
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
 
     cell_taper = ly.create_cell('taper', library, {
         'wg_width1': 0.350,
-        'wg_width2': 0.385,
+        'wg_width2': 0.37,
             })
     if not cell_taper:
         raise Exception ('Cannot load taper cell; please check the script carefully.')
@@ -71,7 +67,7 @@ def design_jonathanz(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type)
     inst_bragg2 = connect_cell(inst_bragg1, 'opt2', cell_bragg, 'opt2')
     
     # move the Bragg grating to the right, and up
-    inst_bragg2.transform(Trans(250000,80000))
+    inst_bragg2.transform(Trans(250000,130000))
 
     #####
     # Waveguides for the two outputs:
@@ -94,11 +90,11 @@ def design_jonathanz(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type)
     '''
     try:
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', 
-            waveguide_type='Strip 1310 nm, w=385 nm (core-clad)', 
-            turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
+            waveguide_type='Strip 1310 nm, w=370 nm (core-clad)',
+            turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90,250, 90, 20, 90, 250, -90, 20, -90] )
     except:    
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', 
             waveguide_type='Strip 1310 nm, w=350 nm (core-clad)', 
-            turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90] )
+            turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90, 250, 90, 20, 90, 250, -90, 20, -90] )
 
     return inst_wg1, inst_wg2, inst_wg3

@@ -38,7 +38,7 @@ def design_Sangwon(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
         'number_of_periods':40 ,
         'grating_period': 0.275,
         'corrugation_width': 0.035,
-        'wg_width': 0.370,
+        'wg_width': 0.37,
         'sinusoidal': False})
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')

@@ -1,6 +1,6 @@
 from pya import *
 
-
+ 
 def design_student1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     
     # load functions

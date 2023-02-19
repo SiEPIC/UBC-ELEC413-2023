@@ -3,7 +3,7 @@
 from pya import *
 
 
-def design_Sangwonhwang(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
+def design_Sangwon(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     
     # load functions
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell

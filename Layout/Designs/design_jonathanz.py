@@ -1,15 +1,12 @@
 from pya import *
 
 
-def design_dhruva(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
+def design_jonathanz(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     
     # load functions
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell
     ly = cell.layout()
     library = ly.technology().name
-
-    #####
-    # designer circuit:
 
     # Create a physical text label so we can see under the microscope
     # How do we find out the PCell parameter variables?
@@ -21,6 +18,7 @@ def design_dhruva(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     # returns: ['text', 'font_name', 'layer', 'mag', 'inverse', 'bias', 'cspacing', 'lspacing', 'eff_cw', 'eff_ch', 'eff_lw', 'eff_dr', 'font']
     from SiEPIC.utils import get_technology_by_name
     TECHNOLOGY = get_technology_by_name(library)
+
     cell_text = ly.create_cell('TEXT', "Basic", {
         'text':cell.name,
         'layer': TECHNOLOGY['M1'],
@@ -28,22 +26,22 @@ def design_dhruva(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
          })
     if not cell_text:
         raise Exception ('Cannot load text label cell; please check the script carefully.')
-    cell.insert(CellInstArray(cell_text.cell_index(), Trans(Trans.R0, 25000,125000)))                
-
+    cell.insert(CellInstArray(cell_text.cell_index(), Trans(Trans.R0, 25000,125000)))
+    
     # load the cells from the PDK
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':60,
-        'grating_period': 0.276,
+        'number_of_periods':50,
+        'grating_period': 0.275,
         'corrugation_width': 0.05,
-        'wg_width': 0.370,
-        'sinusoidal': True})
+        'wg_width': 0.37,
+        'sinusoidal': False})
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
 
     cell_taper = ly.create_cell('taper', library, {
         'wg_width1': 0.350,
-        'wg_width2': 0.370,
+        'wg_width2': 0.37,
             })
     if not cell_taper:
         raise Exception ('Cannot load taper cell; please check the script carefully.')
@@ -61,7 +59,7 @@ def design_dhruva(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     inst_bragg2 = connect_cell(inst_bragg1, 'opt2', cell_bragg, 'opt2')
     
     # move the Bragg grating to the right, and up
-    inst_bragg2.transform(Trans(285000,120000))
+    inst_bragg2.transform(Trans(250000,120000))
 
     #####
     # Waveguides for the two outputs:
@@ -73,7 +71,7 @@ def design_dhruva(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     connect_pins_with_waveguide(inst_taper4, 'pin1', inst_wg2, 'opt1', waveguide_type=waveguide_type)
     
     '''
-    make a long waveguide, back and forth, 
+    make a long waveguide, back and forth,
     target 0.2 nm FSR assuming ng = 4
     > wavelength=1270e-9; ng=4; fsr=0.2e-9;
     > L = wavelength**2/2/ng/fsr
@@ -84,11 +82,11 @@ def design_dhruva(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     '''
     try:
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', 
-            waveguide_type='Strip 1310 nm, w=370 nm (core-clad)', 
-            turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90,250,90,20,90,215,-90,20,-90] )
+            waveguide_type='Strip 1310 nm, w=370 nm (core-clad)',
+            turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90, 250, 90, 20, 90, 250, -90, 20, -90] )
     except:    
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', 
-            waveguide_type='Strip 1310 nm, w=370 nm (core-clad)', 
-            turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90,250,90,20,90,215,-90,20,-90] )
+            waveguide_type='Strip 1310 nm, w=350 nm (core-clad)', 
+            turtle_A = [250,90,20,90,250,-90,20,-90,250,90,20,90,250,-90,20,-90, 250, 90, 20, 90, 250, -90, 20, -90] )
 
     return inst_wg1, inst_wg2, inst_wg3

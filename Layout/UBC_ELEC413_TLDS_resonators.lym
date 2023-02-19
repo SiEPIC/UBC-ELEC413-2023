@@ -210,6 +210,8 @@ inst_gcB = [[ [0] * n_x_gc_arrays for i in range(n_y_gc_arrays)] for j in range(
 pointers_designs = []
 for k in range(0,n_x_gc_arrays):
     for j in range(0,n_y_gc_arrays):
+        if k==n_x_gc_arrays-1 and j&gt;1:
+            continue
         for i in range(n_gcs_eacharray):
             # Grating couplers:
             t = Trans(Trans.R180, x_gc_array+k*dx_gc_arrays, y_gc_array+i*dy_gcs+j*dy_gc_arrays)
@@ -356,7 +358,7 @@ for i in range(i, min(n_x_gc_arrays*n_y_gc_arrays*3, len(inst_tree_out)*2)):
     connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, error_min_bend_radius=False).parent_cell=cell_routing
     ii=1; j=1; turtle_A=[10+ii*2,-90,1,90]
     connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, error_min_bend_radius=False).parent_cell=cell_routing
-if 0:
+if 1:
     ii=2; j=2; turtle_A=[10+ii*2,-90,1,90]
     connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, error_min_bend_radius=False).parent_cell=cell_routing
     ii=3; j=12; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]

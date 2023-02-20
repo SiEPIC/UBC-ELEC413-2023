@@ -2,13 +2,7 @@
 # Enter your Python code here
 from pya import *
 
-<<<<<<< HEAD:Layout/Designs/design_Sangwon.py
-# Enter your Python code here
 def design_Sangwon(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
-=======
-
-def design_Sangwon(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
->>>>>>> parent of 1851630 (Final layout):Layout/Designs/design_Sangwonhwang.py
     
     # load functions
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell

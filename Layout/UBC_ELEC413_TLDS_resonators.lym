@@ -92,12 +92,13 @@ elif tech == "SiEPICfab_EBeam_ZEP":
     library = tech
     library_beta = "SiEPICfab_EBeam_ZEP_beta"
     library_ubc = "SiEPICfab_EBeam_ZEP_UBC"
-    cell_y = ly.create_cell('y_splitter_1310', library_beta)
+    #cell_y = ly.create_cell('y_splitter_1310', library_beta)
+    cell_y = ly.create_cell('ebeam_y_1310', library)
     #cell_splitter = ly.create_cell('splitter_2x2_1310', library)
     #cell_heater = ly.create_cell('wg_heater', library)
     cell_pad = ly.create_cell('BondPad', library)
-    cell_gcA = ly.create_cell('GC_1270_te_220_Blackbox', library)
-    cell_gcB = ly.create_cell('GC_1270_te_220_Blackbox', library)
+    cell_gcA = ly.create_cell('GC_1310_te_220_Blackbox', library)
+    cell_gcB = ly.create_cell('GC_1290_te_220_Blackbox', library)
     # cell_terminator = ly.create_cell('terminator_1310', library_beta)
     cell_laser = ly.create_cell('laser_1270nm_DFB_BB', library_beta)
     metal_layer = "M1"
@@ -433,7 +434,7 @@ if 1:
     connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
     ii=36; j=8; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [14, -90, 2*dy_gcs*dbu-30, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
     connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
-    ii=37; j=18; turtle_A=[10+ii*2,-90,20,90,20,90,20,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
+    ii=37; j=18; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [18, -90, 7*dy_gcs*dbu-34, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
     connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing
     ii=38; j=19; turtle_A=[10+ii*2,-90,1,90]; turtle_B = [16, -90, 5*dy_gcs*dbu-32, 90, 1, -90] # dx_gc_arrays*dbu-6*2,-90,1,90]
     connect_pins_with_waveguide(inst_tree_out[floor((ii)/2)], 'opt%s'%(2+(ii-1)%2), inst_designs[j], 'opt_input', waveguide_type=waveguide_type, turtle_A=turtle_A, turtle_B=turtle_B, error_min_bend_radius=False).parent_cell=cell_routing

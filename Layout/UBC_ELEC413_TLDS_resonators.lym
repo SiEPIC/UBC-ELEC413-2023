@@ -177,7 +177,8 @@ if tech == "SiEPICfab_Shuksan_PDK":
 x_tree_offset = -115000
 # insert splitter tree
 from SiEPIC.utils.layout import y_splitter_tree
-inst_tree_in, inst_tree_out, cell_tree = y_splitter_tree(cell, tree_depth=6, y_splitter_cell=cell_y, library="SiEPICfab_Shuksan_PDK", wg_type=waveguide_type, draw_waveguides=True)
+tree_depth=6
+inst_tree_in, inst_tree_out, cell_tree = y_splitter_tree(cell, tree_depth=tree_depth, y_splitter_cell=cell_y, library="SiEPICfab_Shuksan_PDK", wg_type=waveguide_type, draw_waveguides=True)
 ytree_x, ytree_y = inst_laser.bbox().right-cell_tree.bbox().left-cell_tree.bbox().width()+x_tree_offset,0
 t = Trans(Trans.R0, ytree_x, ytree_y)
 cell.insert(CellInstArray(cell_tree.cell_index(), t))

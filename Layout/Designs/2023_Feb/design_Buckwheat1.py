@@ -84,11 +84,11 @@ def design_Buckwheat1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type
     '''
     try:
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', 
-            waveguide_type='Strip 1310 nm, w=385 nm (core-clad)', 
+            waveguide_type='Strip 1310 nm, w=350 nm (core-clad)', 
             turtle_A = [250,90,20,90,343,-90,20,-90,250,90,20,90,250,-90,20,-90] )
     except:    
         connect_pins_with_waveguide(inst_bragg1, 'opt2', inst_bragg2, 'opt2', 
-            waveguide_type='Strip 1310 nm, w=350 nm (core-clad)', 
+            waveguide_type='Strip 1310 nm, w=385 nm (core-clad)', 
             turtle_A = [250,90,20,90,343,-90,20,-90,250,90,20,90,250,-90,20,-90] )
 
     return inst_wg1, inst_wg2, inst_wg3

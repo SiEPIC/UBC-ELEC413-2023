@@ -32,7 +32,7 @@ def design_HangZou_new_350(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide
 
     # load the cells from the PDK
     # choose appropriate parameters
-    cell_bragg = ly.create_cell('Bragg_grating', library, {
+    cell_bragg = ly.create_cell('ebeam_pcell_bragg_grating', library, {
         'number_of_periods':20,
         'grating_period': 0.277,
         'corrugation_width': 0.052,

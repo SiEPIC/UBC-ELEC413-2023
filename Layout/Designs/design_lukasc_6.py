@@ -149,7 +149,7 @@ class Library_lukasc(pya.Library):
 
 
 def design_lukasc_6(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
- 
+
     # Load the custom library (only the first time)
     if not(pya.Library().library_by_name('Library_lukasc','SiEPICfab_EBeam_ZEP')):
         Library_lukasc()
@@ -161,6 +161,9 @@ def design_lukasc_6(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell
     ly = cell.layout()
     library = ly.technology().name
+    
+    cell_taper = ly.create_cell('ebeam_taper_350nm_2000nm_te1310', library)
+
 
     #####
     # designer circuit:
@@ -194,7 +197,6 @@ def design_lukasc_6(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
         
-    cell_taper = ly.create_cell('taper_350nm_2000nm', library)
     if not cell_taper:
         raise Exception ('Cannot load taper cell; please check the script carefully.')
     waveguide_type_mm = 'Multimode Strip TE 1310 nm, w=2000 nm'

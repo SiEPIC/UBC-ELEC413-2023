@@ -41,7 +41,7 @@ tech = ["SiEPICfab_Shuksan_PDK", "SiEPICfab_EBeam_ZEP"]
 tech = tech[1]
 
 waveguide_type={'SiEPICfab_Shuksan_PDK':'Strip TE 1310 nm, w=350 nm', 
-                'SiEPICfab_EBeam_ZEP':'Strip 1310 nm, w=350 nm (core-clad)'}
+                'SiEPICfab_EBeam_ZEP':'Strip TE 1310 nm, w=350 nm (core-clad)'}
 
 wavelength='1270'
 pad_pitch = 250000
@@ -88,20 +88,22 @@ if tech == "SiEPICfab_Shuksan_PDK":
     cell_gcB = ly.create_cell('GC_1310_TE_8deg', library)
     cell_terminator = ly.create_cell('terminator_1310', library)
     metal_layer = "M2_router"
+    cell_taper = ly.create_cell('taper_350nm_2000nm', library)
 elif tech == "SiEPICfab_EBeam_ZEP":
     library = tech
     library_beta = "SiEPICfab_EBeam_ZEP_beta"
     library_ubc = "SiEPICfab_EBeam_ZEP_UBC"
     #cell_y = ly.create_cell('y_splitter_1310', library_beta)
-    cell_y = ly.create_cell('ebeam_y_1310', library)
+    cell_y = ly.create_cell('ebeam_ybranch_te1310', library)
     #cell_splitter = ly.create_cell('splitter_2x2_1310', library)
     #cell_heater = ly.create_cell('wg_heater', library)
-    cell_pad = ly.create_cell('BondPad', library)
-    cell_gcA = ly.create_cell('GC_1310_te_220_Blackbox', library)
-    cell_gcB = ly.create_cell('GC_1290_te_220_Blackbox', library)
+    cell_pad = ly.create_cell('ebeam_BondPad', library)
+    cell_gcA = ly.create_cell('ebeam_GC_Air_te1310_BB', library)
+    cell_gcB = ly.create_cell('ebeam_GC_Air_te1310_BB', library)
     # cell_terminator = ly.create_cell('terminator_1310', library_beta)
     cell_laser = ly.create_cell('laser_1270nm_DFB_BB', library_beta)
     metal_layer = "M1"
+    cell_taper = ly.create_cell('ebeam_taper_350nm_2000nm_te1310', library)
 
 if not cell_y:
     raise Exception ('Cannot load 1x2 splitter cell; please check the script carefully.')

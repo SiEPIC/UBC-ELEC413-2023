@@ -37,7 +37,7 @@ def mehmetunlu_dev01(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type)
     
     # choose appropriate parameters
     cell_bragg = ly.create_cell('Bragg_grating', library, {
-        'number_of_periods':200,
+        'number_of_periods':100,
         'grating_period': 0.350,
         'corrugation_width': 0.675,
         'wg_width': 0.225,

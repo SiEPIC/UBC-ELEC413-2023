@@ -1,7 +1,10 @@
+
+# Enter your Python code here
+
 from pya import *
 
  
-def design_student1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
+def design_mehmetunlu_dev01(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     
     # load functions
     from SiEPIC.scripts import connect_pins_with_waveguide, connect_cell
@@ -31,19 +34,20 @@ def design_student1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     cell.insert(CellInstArray(cell_text.cell_index(), Trans(Trans.R0, 25000,125000)))                
 
     # load the cells from the PDK
+    
     # choose appropriate parameters
     cell_bragg = ly.create_cell('ebeam_pcell_bragg_grating', library, {
-        'number_of_periods':60,
-        'grating_period': 0.270,
-        'corrugation_width': 0.08,
-        'wg_width': 0.385,
-        'sinusoidal': True})
+        'number_of_periods':200,
+        'grating_period': 0.350,
+        'corrugation_width': 0.675,
+        'wg_width': 0.225,
+        'sinusoidal': False})
     if not cell_bragg:
         raise Exception ('Cannot load Bragg grating cell; please check the script carefully.')
 
     cell_taper = ly.create_cell('ebeam_pcell_taper', library, {
         'wg_width1': 0.350,
-        'wg_width2': 0.385,
+        'wg_width2': 0.600,
             })
     if not cell_taper:
         raise Exception ('Cannot load taper cell; please check the script carefully.')
@@ -51,7 +55,7 @@ def design_student1(cell, cell_y, inst_wg1, inst_wg2, inst_wg3, waveguide_type):
     # instantiate y-branch (attached to input waveguide)
     inst_y1 = connect_cell(inst_wg1, 'opt2', cell_y, 'opt2')
 
-    # instantiate taper from 350 nm waveguide y-branch to 385 nm Bragg grating
+    # instantiate taper from 350 nm waveguide y-branch to 600 nm Bragg grating
     inst_taper1 = connect_cell(inst_y1, 'opt1', cell_taper, 'pin1')
     
     # instantiate Bragg grating (attached to y branch)

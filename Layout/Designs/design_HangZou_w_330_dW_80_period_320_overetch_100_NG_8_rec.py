@@ -89,15 +89,47 @@ def design_HangZou_w_330_dW_80_period_320_overetch_100_NG_8_rec(cell, cell_y, in
     # instantiate a taper (attached to the fifth taper, then move)
     inst_taper6 = connect_cell(inst_taper5, 'opt2', cell_taper, 'opt2')
     # move the taper to the right and up
-    inst_taper6.transform(Trans(204372,0))
+    inst_taper6.transform(Trans(200000,0))
 
     # Waveguide between taper 5 and taper 6 (wide multimode waveguide)
     connect_pins_with_waveguide(inst_taper5, 'opt2', inst_taper6, 'opt2', waveguide_type=waveguide_type_mm)
 
-    # instantiate Bragg grating (attached to the last taper)
-    inst_bragg2 = connect_cell(inst_taper6, 'opt', cell_bragg, 'opt2')
+    # instantiate a taper (attached to the 5th taper, then move)
+    inst_taper7 = connect_cell(inst_taper5, 'opt2', cell_taper, 'opt2')
+    # move the taper to the right and up
+    inst_taper7.transform(Trans(200000,20000))
 
-    # End of Fabry-Perot cavity    
+    # Waveguide between taper 6 and taper 7 (single mode waveguide)
+    connect_pins_with_waveguide(inst_taper6, 'opt', inst_taper7, 'opt', waveguide_type=waveguide_type)
+
+    # instantiate a taper (attached to the 7th taper, then move)
+    inst_taper8 = connect_cell(inst_taper7, 'opt2', cell_taper, 'opt2')
+    # move the taper to the right and up
+    inst_taper8.transform(Trans(-200000,0))
+
+    # Waveguide between taper 7 and taper 8 (wide multimode waveguide)
+    connect_pins_with_waveguide(inst_taper7, 'opt2', inst_taper8, 'opt2', waveguide_type=waveguide_type_mm)
+
+    # instantiate a taper (attached to the 7th taper, then move)
+    inst_taper9 = connect_cell(inst_taper7, 'opt2', cell_taper, 'opt2')
+    # move the taper to the right and up
+    inst_taper9.transform(Trans(-200000,20000))
+
+    # Waveguide between taper 8 and taper 9 (single mode waveguide)
+    connect_pins_with_waveguide(inst_taper8, 'opt', inst_taper9, 'opt', waveguide_type=waveguide_type)
+
+     # instantiate a taper (attached to the 9th taper, then move)
+    inst_taper10 = connect_cell(inst_taper9, 'opt2', cell_taper, 'opt2')
+    # move the taper to the right and up
+    inst_taper10.transform(Trans(200000,0))
+
+    # Waveguide between taper 9 and taper 10 (wide multimode waveguide)
+    connect_pins_with_waveguide(inst_taper9, 'opt2', inst_taper10, 'opt2', waveguide_type=waveguide_type_mm)
+
+    # instantiate Bragg grating (attached to the last taper)
+    inst_bragg2 = connect_cell(inst_taper10, 'opt', cell_bragg, 'opt2')
+
+    # End of Fabry-Perot cavity
 
     # Waveguides for the two Fabry-Perot outputs:
     connect_pins_with_waveguide(inst_y1, 'opt3', inst_wg3, 'opt1', waveguide_type=waveguide_type)

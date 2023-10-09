@@ -1,0 +1,5 @@
+# Bragg grating 
+# Columns: delta_width, kappa, Bragg wavelength
+0, 0, 1310e-9
+50e-9, 125000, 1290e-9
+

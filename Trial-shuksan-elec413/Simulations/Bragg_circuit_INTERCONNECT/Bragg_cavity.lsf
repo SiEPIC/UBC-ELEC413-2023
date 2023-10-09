@@ -1,0 +1,151 @@
+# Script to build a Bragg grating Fabry Perot Cavity circuit simulation in INTERCONNECT
+# Uses:  
+#       Models from the Shuksan library
+#       Creates a compact model for a Bragg grating based on a look-up table
+# by Lukas Chrostowski
+
+switchtolayout;
+deleteall;
+
+lambda0 = 1.31e-6;
+INCLUDE_GCs = true;
+
+
+# Create Bragg grating model
+Bragg_CML;
+
+
+# Delta Width:
+delta_width = 20e-9;
+number = 500;
+
+
+
+# Add Optical Network Analyser 
+elementName = addelement('Optical Network Analyzer');
+setnamed(elementName, 'x position', 200);
+setnamed(elementName,'y position',100);
+setnamed(elementName, 'input parameter', 'center and range');
+setnamed(elementName, 'center frequency', c/lambda0);
+setnamed(elementName, 'frequency range', 18e12); 
+setnamed(elementName, 'number of points', 300000);
+setnamed(elementName, 'plot kind', 'wavelength');
+setnamed(elementName, 'relative to center', false);
+setnamed(elementName, 'number of input ports', 2);
+setnamed(elementName, 'name', 'Optical Network Analyzer');
+copy(-200,-200);
+setnamed(elementName, 'number of points', 10000);
+
+# Connect Bragg grating to ONA for testing
+setnamed("Bragg_grating","delta_width",delta_width);
+setnamed("Bragg_grating","number",number);
+connect("Bragg_grating", 0, "ONA_1", 0);
+connect("Bragg_grating", 0, "ONA_1", 1);
+connect("Bragg_grating", 1, "ONA_1", 2);
+
+
+
+# Add Bragg grating
+elementName = addelement('::Custom::User::Bragg_grating');
+setnamed(elementName, 'x position', 400);
+setnamed(elementName, 'y position',600);
+setnamed(elementName,"delta_width", delta_width);
+setnamed("Bragg_grating","number",number);
+bragg1 = elementName;
+elementName1 = elementName;
+
+# Add taper
+elementName = addelement('::Custom::SiEPICfab_Shuksan_PDK::taper_350nm_2000nm');
+setnamed(elementName, 'x position', 500);
+setnamed(elementName, 'y position',600);
+connect(elementName1, 1, elementName, 0);
+elementName1 = elementName;
+
+# Add waveguide
+elementName = addelement('::Custom::SiEPICfab_Shuksan_PDK::wg_strip_o_mm_2000');
+setnamed(elementName, 'x position', 600);
+setnamed(elementName, 'y position',600);
+connect(elementName1, 1, elementName, 0);
+elementName1 = elementName;
+
+# Add taper
+elementName = addelement('::Custom::SiEPICfab_Shuksan_PDK::taper_350nm_2000nm');
+setnamed(elementName, 'x position', 700);
+setnamed(elementName, 'y position',600);
+rotateelement(elementName); rotateelement(elementName);
+connect(elementName1, 1, elementName, 1);
+elementName1 = elementName;
+
+# Add Bragg grating
+elementName = addelement('::Custom::User::Bragg_grating');
+setnamed(elementName, 'x position', 800);
+setnamed(elementName, 'y position',600);
+setnamed(elementName,"delta_width", delta_width);
+setnamed("Bragg_grating","number",number);
+bragg2 = elementName;
+connect(elementName1, 0, elementName, 0);
+
+
+if (INCLUDE_GCs) {
+    #Add Grating couplers
+    ?elementName = addelement('::Custom::SiEPICfab_Shuksan_PDK::gc_1310_te_8deg');
+    setnamed(elementName,'x position',300);
+    setnamed(elementName,'y position',400);
+    setnamed(elementName, 'name', 'gc1');
+    copy(0,200);
+    setnamed(elementName, 'name', 'gc2');
+    
+    # connect to ONA
+    connect('Optical Network Analyzer', 1, 'gc1', 0);
+    connect('Optical Network Analyzer', 0, 'gc1', 0);
+    connect('Optical Network Analyzer', 2, 'gc2', 0);
+
+    # connect to Bragg gratings
+    connect('gc2', 1, bragg1, 0);
+    connect('gc1', 1, bragg2, 1);
+}
+else {
+    # connect to ONA
+    connect('Optical Network Analyzer', 1, bragg2, 1);
+    connect('Optical Network Analyzer', 0, bragg2, 1);
+    connect('Optical Network Analyzer', 2, bragg1, 0);
+}    
+
+
+run;
+
+# Plot results:
+
+# Bragg grating
+t1=getresult("ONA_1", "input 1/mode 1/gain");
+t2=getresult("ONA_1", "input 2/mode 1/gain");
+wvl1= t1.getparameter('wavelength');
+t1= t1.getattribute("TE gain (dB)");
+t2= t2.getattribute("TE gain (dB)");
+plot(wvl1*1e6,t1,t2,'wavelength [micron]','Amplitude [dB]','Bragg Spectrum');
+legend('reflection','transmission');
+
+# Cavity:
+t1=getresult("Optical Network Analyzer", "input 1/mode 1/gain");
+t2=getresult("Optical Network Analyzer", "input 2/mode 1/gain");
+wvl1= t1.getparameter('wavelength');
+t1= t1.getattribute(getattribute(t1));
+t2= t2.getattribute(getattribute(t2));
+plot(wvl1*1e6,t1,t2,'wavelength [micron]','Amplitude [dB]','Circuit Spectrum');
+legend('reflection','transmission');
+
+q2=getresult("Optical Network Analyzer", "input 2/mode 1/peak/quality factor");
+q2wvl = q2.getparameter('wavelength');
+q2 = q2.getattribute(getattribute(q2));
+plot(q2wvl*1e6,q2,'wavelength [micron]','Quality Factor','Qualify Factor');
+legend('reflection','transmission');
+
+q2=getresult("Optical Network Analyzer", "input 2/mode 1/peak/free spectral range");
+q2wvl = q2.getparameter('wavelength');
+q2 = q2.getattribute(getattribute(q2));
+plot(q2wvl*1e6,q2,'wavelength [micron]','free spectral range','free spectral range');
+legend('reflection','transmission');
+
+
+
+#switchtolayout;

@@ -109,7 +109,7 @@ elif tech == "SiEPICfab_EBeam_ZEP":
         'wg_width2': 0.35})
     cell_pad = ly.create_cell('ebeam_BondPad', library)
     cell_gcA = ly.create_cell('ebeam_GC_Air_te1310_BB', library)
-    #cell_gcB = ly.create_cell('ebeam_GC_Air_te1310_BB', library)
+    cell_gcB = ly.create_cell('ebeam_GC_Air_te1310_BB', library)
     # cell_terminator = ly.create_cell('terminator_1310', library_beta)
     cell_laser = ly.create_cell('laser_1270nm_DFB_BB', library_beta)
     metal_layer = "M1"
@@ -123,8 +123,8 @@ if not cell_y:
 #    raise Exception ('Cannot load waveguide heater cell; please check the script carefully.')
 if not cell_gcA:
     raise Exception ('Cannot load grating coupler cell; please check the script carefully.')
-#if not cell_gcB:
- #   raise Exception ('Cannot load grating coupler cell; please check the script carefully.')
+if not cell_gcB:
+    raise Exception ('Cannot load grating coupler cell; please check the script carefully.')
 #if not cell_terminator:
 #    raise Exception ('Cannot load terminator cell; please check the script carefully.')
 if not cell_laser:

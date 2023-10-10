@@ -259,7 +259,7 @@ for k in range(0,n_x_gc_arrays):
                 inst_w.transform(Trans(-10000,0))
                 if k==0 and j==0 and i==1:
                     cell_wg_gc = ly.create_cell('wg_gc')
-                    connect_pins_with_waveguide(inst_w, 'opt3', inst_gcA[i][j][k], 'opt1', waveguide_type=waveguide_type, relaxed_pinnames=True).parent_cell=cell_wg_gc
+                    connect_pins_with_waveguide(inst_w, 'opt1', inst_gcA[i][j][k], 'opt1', waveguide_type=waveguide_type, relaxed_pinnames=True).parent_cell=cell_wg_gc
                     #connect_pins_with_waveguide(inst_y, 'opt3', inst_gcA[i][j][k], 'opt1', waveguide_type=waveguide_type, relaxed_pinnames=True).parent_cell=cell_wg_gc
                     #connect_pins_with_waveguide(inst_y, 'opt2', inst_gcB[i][j][k], 'opt1', waveguide_type=waveguide_type, turtle_A=[10,90, 20,-90], relaxed_pinnames=True).parent_cell=cell_wg_gc
                 cell.insert(CellInstArray(cell_wg_gc.cell_index(), 

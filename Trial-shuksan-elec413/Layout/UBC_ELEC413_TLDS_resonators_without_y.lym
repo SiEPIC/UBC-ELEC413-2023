@@ -104,13 +104,13 @@ elif tech == "SiEPICfab_EBeam_ZEP":
     cell_y = ly.create_cell('ebeam_ybranch_te1310', library)
     #cell_splitter = ly.create_cell('splitter_2x2_1310', library)
     #cell_heater = ly.create_cell('wg_heater', library)
-    cell_waveguide = ly.create_cell('ebeam_pcell_taper', {
+    cell_waveguide = ly.create_cell('ebeam_pcell_taper',library, {
         'wg_width1': 0.35,
-        'wg_width2': 0.35})
+        'wg_width2': 0.352})
     cell_pad = ly.create_cell('ebeam_BondPad', library)
     cell_gcA = ly.create_cell('ebeam_GC_Air_te1310_BB', library)
     cell_gcB = ly.create_cell('ebeam_GC_Air_te1310_BB', library)
-    # cell_terminator = ly.create_cell('terminator_1310', library_beta)
+    cell_terminator = ly.create_cell('ebeam_terminator_te1310', library)
     cell_laser = ly.create_cell('laser_1270nm_DFB_BB', library_beta)
     metal_layer = "M1"
     cell_taper = ly.create_cell('ebeam_taper_350nm_2000nm_te1310', library)
@@ -125,8 +125,8 @@ if not cell_gcA:
     raise Exception ('Cannot load grating coupler cell; please check the script carefully.')
 if not cell_gcB:
     raise Exception ('Cannot load grating coupler cell; please check the script carefully.')
-#if not cell_terminator:
-#    raise Exception ('Cannot load terminator cell; please check the script carefully.')
+if not cell_terminator:
+    raise Exception ('Cannot load terminator cell; please check the script carefully.')
 if not cell_laser:
     raise Exception ('Cannot load laser cell; please check the script carefully.')
 if not cell_pad:
@@ -255,7 +255,7 @@ for k in range(0,n_x_gc_arrays):
             if i in [1,2,3,4,5,6]:
                 #inst_y = connect_cell(inst_gcA[i][j][k], 'opt1', cell_y, 'opt3', relaxed_pinnames=True)
                 #inst_y.transform(Trans(-10000,0))
-                inst_w = connect_cell(inst_gcA[i][j][k], 'opt1', cell_waveguide, 'opt1', relaxed_pinnames=True)#taper instead of y-branch
+                inst_w = connect_cell(inst_gcA[i][j][k], 'opt1', cell_waveguide, 'pin1', relaxed_pinnames=True)#taper instead of y-branch
                 inst_w.transform(Trans(-10000,0))
                 if k==0 and j==0 and i==1:
                     cell_wg_gc = ly.create_cell('wg_gc')
@@ -382,7 +382,7 @@ for m in designs_:
     inst_wg1, inst_wg2, inst_wg3 = eval(mm2)
     # instantiate
     inst_out = pointers_designs[i][0]
-    inst_design = connect_cell(inst_out, 'opt1', ly.cell(design_name), 'opt_output1')
+    inst_design = connect_cell(inst_out, 'pin2', ly.cell(design_name), 'opt_output1')
     inst_designs.append(inst_design)
         
     i+=1
@@ -394,7 +394,7 @@ if tree_depth==6:
         if 1:    
             # instantiate a blank design for all the extra cells
             inst_out = pointers_designs[i][0]
-            inst_design = connect_cell(inst_out, 'opt1', ly.cell("design_ZZZ"), 'opt_output1')
+            inst_design = connect_cell(inst_out, 'pin2', ly.cell("design_ZZZ"), 'opt_output1')
             inst_designs.append(inst_design)
         else:
             # add a terminator
@@ -547,11 +547,11 @@ elif tree_depth==4:
         if 1:    
             # instantiate a blank design for all the extra cells
             inst_out = pointers_designs[i][0]
-            inst_design = connect_cell(inst_out, 'opt1', ly.cell("design_ZZZ"), 'opt_output1')
+            inst_design = connect_cell(inst_out, 'pin2', ly.cell("design_ZZZ"), 'opt_output1')
             inst_designs.append(inst_design)
         else:
             # add a terminatorl
-            connect_cell(inst_out, 'opt1', cell_terminator, 'opt1')
+            connect_cell(inst_out, 'pin1', cell_terminator, 'pin1')
     
         # waveguides:
         cell_routing = ly.create_cell("waveguide_routing")

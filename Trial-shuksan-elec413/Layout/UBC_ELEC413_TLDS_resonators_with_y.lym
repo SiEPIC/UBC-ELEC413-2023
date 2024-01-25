@@ -108,7 +108,7 @@ elif tech == "SiEPICfab_EBeam_ZEP":
         'wg_width1': 0.35,
         'wg_width2': 0.35})
     cell_pad = ly.create_cell('ebeam_BondPad', library)
-    cell_gcA = ly.create_cell('ebeam_GC_Air_te1310_BB', library)
+    cell_gcA = ly.create_cell('ebeam_GC_Air_te1310', library)
     #cell_gcB = ly.create_cell('ebeam_GC_Air_te1310_BB', library)
     # cell_terminator = ly.create_cell('terminator_1310', library_beta)
     cell_laser = ly.create_cell('laser_1270nm_DFB_BB', library_beta)

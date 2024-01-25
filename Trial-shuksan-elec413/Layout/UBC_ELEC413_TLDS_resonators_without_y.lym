@@ -104,6 +104,7 @@ elif tech == "SiEPICfab_EBeam_ZEP":
     cell_y = ly.create_cell('ebeam_ybranch_te1310', library)
     #cell_splitter = ly.create_cell('splitter_2x2_1310', library)
     #cell_heater = ly.create_cell('wg_heater', library)
+<<<<<<< Updated upstream
     #cell_waveguide = ly.create_cell('ebeam_pcell_taper',library, {
         #'wg_width1': 0.35,
         #'wg_width2': 0.352})
@@ -111,6 +112,9 @@ elif tech == "SiEPICfab_EBeam_ZEP":
      #   'wg_length': 0.04,
       #  'wg_width': 0.35})
     cell_waveguide = ly.create_cell('w_straight',library)
+=======
+    cell_waveguide = ly.create_cell('w_straight', library_beta)
+>>>>>>> Stashed changes
     cell_pad = ly.create_cell('ebeam_BondPad', library)
     cell_gcA = ly.create_cell('ebeam_GC_Air_te1310_BB', library)
     cell_gcB = ly.create_cell('ebeam_GC_Air_te1310_BB', library)
@@ -241,6 +245,7 @@ dy_gcs = 127e3
 dx_gcA_B = 30e3
 dy_gcA_B = 30e3
 
+
 import numpy as np
 inst_gcA = [[ [0] * n_x_gc_arrays for i in range(n_y_gc_arrays)] for j in range(n_gcs_eacharray) ]
 #inst_gcB = [[ [0] * n_x_gc_arrays for i in range(n_y_gc_arrays)] for j in range(n_gcs_eacharray) ]
@@ -259,11 +264,11 @@ for k in range(0,n_x_gc_arrays):
             if i in [1,2,3,4,5,6]:
                 #inst_y = connect_cell(inst_gcA[i][j][k], 'opt1', cell_y, 'opt3', relaxed_pinnames=True)
                 #inst_y.transform(Trans(-10000,0))
-                inst_w = connect_cell(inst_gcA[i][j][k], 'opt1', cell_waveguide, 'opt1', relaxed_pinnames=True)#taper instead of y-branch
-                inst_w.transform(Trans(-10000,0))
+                inst_w = connect_cell(inst_gcA[i][j][k], 'opt1', cell_waveguide, 'opt2', relaxed_pinnames=True)#taper instead of y-branch
+                #inst_w.transform(Trans(-10000,0))
                 if k==0 and j==0 and i==1:
                     cell_wg_gc = ly.create_cell('wg_gc')
-                    connect_pins_with_waveguide(inst_w, 'opt1', inst_gcA[i][j][k], 'opt1', waveguide_type=waveguide_type, relaxed_pinnames=True).parent_cell=cell_wg_gc
+                    connect_pins_with_waveguide(inst_w, 'opt2', inst_gcA[i][j][k], 'opt1', waveguide_type=waveguide_type, relaxed_pinnames=True).parent_cell=cell_wg_gc
                     #connect_pins_with_waveguide(inst_y, 'opt3', inst_gcA[i][j][k], 'opt1', waveguide_type=waveguide_type, relaxed_pinnames=True).parent_cell=cell_wg_gc
                     #connect_pins_with_waveguide(inst_y, 'opt2', inst_gcB[i][j][k], 'opt1', waveguide_type=waveguide_type, turtle_A=[10,90, 20,-90], relaxed_pinnames=True).parent_cell=cell_wg_gc
                 cell.insert(CellInstArray(cell_wg_gc.cell_index(), 
